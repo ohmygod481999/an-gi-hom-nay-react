@@ -1,9 +1,11 @@
+import GetStarted from "./pages/GetStarted";
+
 function App() {
-  return (
-    <div className="App">
-      app
-    </div>
-  );
+    return (
+        <div>
+            <GetStarted />
+        </div>
+    );
 }
 
 export default App;
