@@ -1,6 +1,9 @@
 import React from "react";
+import { useTitle } from "../utils/hooks/useTitle";
 
 function GetStarted() {
+    useTitle("Get started");
+    
     return (
         <div>
             <div className="bg-primary d-flex align-items-center justify-content-center vh-100 index-page">

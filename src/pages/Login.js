@@ -42,7 +42,7 @@ function Login() {
                         />
                     </div>
                     <button className="btn btn-primary btn-lg btn-block">
-                        <a className="verification.html">SIGN IN</a>
+                        <a href="/" className="verification.html">SIGN IN</a>
                     </button>
                     <div className="py-2">
                         <button className="btn btn-lg btn-facebook btn-block">

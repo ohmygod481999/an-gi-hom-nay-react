@@ -1,7 +1,6 @@
 import GetStarted from "./pages/GetStarted";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Login from "./pages/Login";
-
 function App() {
     return (
         <Router>
