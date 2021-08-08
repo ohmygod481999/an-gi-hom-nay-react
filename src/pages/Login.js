@@ -1,8 +1,44 @@
-import React from "react";
+import * as firebaseui from "firebaseui";
+import firebase from "../utils/firebase";
+import React, { useEffect } from "react";
 import { useTitle } from "../utils/hooks/useTitle";
+import "firebaseui/dist/firebaseui.css";
 
 function Login() {
     useTitle("Login");
+
+    useEffect(() => {
+        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+        ui.start("#firebaseui-auth-container", {
+            signInOptions: [
+                {
+                    provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                    requireDisplayName: false,
+                },
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+            ],
+            signInFlow: "popup",
+            callbacks: {
+                signInSuccessWithAuthResult: (authResult) => {
+                    const { additionalUserInfo, credential } = authResult;
+                    const { isNewUser, profile, providerId } =
+                        additionalUserInfo;
+                    const { accessToken, idToken, signInMethod } = credential;
+                    console.log(accessToken);
+                    alert("Success");
+                },
+                signInFailure: (error) => {
+                    alert(JSON.stringify(error));
+                },
+            },
+        });
+
+        return () => {
+            ui.delete();
+        };
+    }, []);
 
     return (
         <div className="login-page vh-100">
@@ -14,7 +50,25 @@ function Login() {
             <div className="p-4">
                 <h2 className="text-white my-0">Welcome Back</h2>
                 <p className="text-white text-50">Sign in to continue</p>
-                <form className="mt-5 mb-4" action="verification.html">
+                <div
+                    style={{
+                        display: "flex",
+                        height: "50vh",
+                        justifyContent: "center",
+                        flexDirection: "column",
+                    }}
+                >
+                    <div id="firebaseui-auth-container"></div>
+                    <a
+                        href="forgot_password.html"
+                        className="text-decoration-none"
+                    >
+                        <p className="text-white text-center">
+                            Forgot your password?
+                        </p>
+                    </a>
+                </div>
+                {/* <form className="mt-5 mb-4" action="verification.html">
                     <div className="form-group">
                         <label
                             htmlFor="exampleInputEmail1"
@@ -55,12 +109,7 @@ function Login() {
                             Facebook
                         </button>
                     </div>
-                </form>
-                <a href="forgot_password.html" className="text-decoration-none">
-                    <p className="text-white text-center">
-                        Forgot your password?
-                    </p>
-                </a>
+                </form> */}
             </div>
             <div className="fixed-bottom d-flex align-items-center justify-content-center">
                 <a href="signup.html">

@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./utils/apollo";
 
+
 ReactDOM.render(
     <React.StrictMode>
         <ApolloProvider client={apolloClient}>
