@@ -1,8 +1,7 @@
 import GetStarted from "./pages/GetStarted";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import Maintence from "./pages/maintence/Maintence";
-import BottomNav from "./layout/bottomnav/BottomNav";
+import Maintence from './pages/maintence/index'
 
 function App() {
     return (
