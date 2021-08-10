@@ -12,6 +12,7 @@ export const GET_AUTH = gql`
                 photoURL
             }
             accessToken
+            isLoggedIn
         }
     }
 `;

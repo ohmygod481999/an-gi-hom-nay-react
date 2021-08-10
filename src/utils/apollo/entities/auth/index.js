@@ -1,8 +1,5 @@
 import { makeVar } from "@apollo/client";
 
-const authInitialValue = {
-    user: null,
-    accessToken: null,
-};
+const authInitialValue = null;
 
 export const authVar = makeVar(authInitialValue);

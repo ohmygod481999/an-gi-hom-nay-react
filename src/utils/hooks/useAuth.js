@@ -17,6 +17,8 @@ export const useAuth = () => {
                 };
                 const idToken = await user.getIdToken();
                 authMutations.setAuth(userInfo, idToken);
+            } else {
+                authMutations.setAuth(null, null);
             }
         });
     }, []);

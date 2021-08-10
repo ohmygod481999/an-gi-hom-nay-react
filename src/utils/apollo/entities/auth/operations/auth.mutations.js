@@ -1,21 +1,12 @@
 import { authVar } from "..";
 
 const createSetAuth = (authVar) => {
-    return (
-        { uid, displayName, email, emailVerified, phoneNumber, photoURL },
-        accessToken
-    ) => {
-        // const auth = authVar();
+    return (user, accessToken) => {
+        // user { uid, displayName, email, emailVerified, phoneNumber, photoURL }
         authVar({
-            user: {
-                uid,
-                displayName,
-                email,
-                emailVerified,
-                phoneNumber,
-                photoURL,
-            },
+            user: user,
             accessToken,
+            isLoggedIn: accessToken ? true : false,
         });
     };
 };
