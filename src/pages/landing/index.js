@@ -1,14 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Landing() {
     return (
         <div className="vh-100 landing-page-skip">
-            <a
+            <Link
                 className="position-absolute btn-sm btn btn-outline-primary m-4 zindex"
-                href="location.html"
+                to="/"
             >
                 Skip <i className="feather-chevrons-right" />
-            </a>
+            </Link>
             <div className="osahan-slider">
                 <div className="osahan-slider-item text-center">
                     <div className="d-flex align-items-center justify-content-center vh-100 flex-column">

@@ -5,6 +5,8 @@ import Landing from "./pages/landing";
 import { useThirdPartyScript } from "./utils/hooks/useThirdPartyScript";
 import { thirdPartyScripts } from "./configs";
 import { useAuth } from "./utils/hooks/useAuth";
+import { auth } from "./utils/firebase";
+import Home from "./pages/home";
 
 function App() {
     useThirdPartyScript(thirdPartyScripts);
@@ -13,7 +15,7 @@ function App() {
     return (
         <Switch>
             <Route exact path="/">
-                <GetStarted />
+                {auth.currentUser ? <Home /> : <GetStarted />}
             </Route>
             <Route path="/login">
                 <Login />
