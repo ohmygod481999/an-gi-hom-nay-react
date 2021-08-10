@@ -1,11 +1,11 @@
 import React from "react";
-import ActionFooter from "../../layout/ActionFooter";
 import MainLayout from "../../layout/MainLayout";
-import MainNav from "../../layout/MainNav";
+import ModalFilter from "../../layout/ModalFilter";
 
 function Home() {
     return (
         <MainLayout>
+            <ModalFilter />
             <div className="bg-primary p-3">
                 <div className="text-white">
                     <div className="title d-flex align-items-center">
