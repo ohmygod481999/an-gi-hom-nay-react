@@ -1,16 +1,23 @@
-import * as firebaseui from "firebaseui";
-import firebase from "../utils/firebase";
 import React, { useEffect } from "react";
-import { useTitle } from "../utils/hooks/useTitle";
 import "firebaseui/dist/firebaseui.css";
+import { useQuery } from "@apollo/client";
+import { useHistory } from "react-router-dom";
+import { useTitle } from "../../utils/hooks/useTitle";
+import { GET_AUTH } from "../../utils/apollo/entities/auth/operations/auth.queries";
+import firebase, { authUI } from "../../utils/firebase";
 
 function Login() {
     useTitle("Login");
+    const history = useHistory();
+
+    const { data, loading, error } = useQuery(GET_AUTH);
 
     useEffect(() => {
-        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        console.log(data);
+    }, [data]);
 
-        ui.start("#firebaseui-auth-container", {
+    useEffect(() => {
+        authUI.start("#firebaseui-auth-container", {
             signInOptions: [
                 {
                     provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
@@ -19,7 +26,7 @@ function Login() {
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                 firebase.auth.FacebookAuthProvider.PROVIDER_ID,
             ],
-            signInFlow: "popup",
+            // signInFlow: "popup",
             callbacks: {
                 signInSuccessWithAuthResult: (authResult) => {
                     const { additionalUserInfo, credential } = authResult;
@@ -27,17 +34,13 @@ function Login() {
                         additionalUserInfo;
                     const { accessToken, idToken, signInMethod } = credential;
                     console.log(accessToken);
-                    alert("Success");
+                    history.push("/landing");
                 },
                 signInFailure: (error) => {
                     alert(JSON.stringify(error));
                 },
             },
         });
-
-        return () => {
-            ui.delete();
-        };
     }, []);
 
     return (
