@@ -5,12 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./utils/apollo";
-
+import { HashRouter as Router } from "react-router-dom";
 
 ReactDOM.render(
     <React.StrictMode>
         <ApolloProvider client={apolloClient}>
-            <App />
+            <Router>
+                <App />
+            </Router>
         </ApolloProvider>
     </React.StrictMode>,
     document.getElementById("root")
