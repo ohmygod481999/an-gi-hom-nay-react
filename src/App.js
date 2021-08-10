@@ -15,6 +15,8 @@ import Term from "./pages/term";
 import Landing from "./pages/landing";
 import Home from "./pages/home";
 import Profile from "./pages/profile";
+import PageLoader from "./layout/PageLoader";
+import NotFound from "./pages/not-found";
 
 import { useThirdPartyScript } from "./utils/hooks/useThirdPartyScript";
 import { thirdPartyScripts } from "./configs";
@@ -22,8 +24,6 @@ import { useAuth } from "./utils/hooks/useAuth";
 import { useQuery } from "@apollo/client";
 import { GET_AUTH } from "./utils/apollo/entities/auth/operations/auth.queries";
 import { useEffect, useState } from "react";
-import PageLoader from "./layout/PageLoader";
-import NotFound from "./pages/not-found";
 
 function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
