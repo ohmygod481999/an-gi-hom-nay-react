@@ -19,8 +19,8 @@ function App() {
                     photoURL: user.photoURL,
                     uid: user.uid,
                 };
-                const accessToken = await user.getIdToken();
-                authMutations.setAuth(userInfo, accessToken);
+                const idToken = await user.getIdToken();
+                authMutations.setAuth(userInfo, idToken);
             }
         });
     }, []);

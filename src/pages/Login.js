@@ -26,7 +26,7 @@ function Login() {
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                 firebase.auth.FacebookAuthProvider.PROVIDER_ID,
             ],
-            signInFlow: "popup",
+            // signInFlow: "popup",
             callbacks: {
                 signInSuccessWithAuthResult: (authResult) => {
                     const { additionalUserInfo, credential } = authResult;
