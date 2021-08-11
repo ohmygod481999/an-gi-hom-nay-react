@@ -24,6 +24,9 @@ import { useAuth } from "./utils/hooks/useAuth";
 import { useQuery } from "@apollo/client";
 import { GET_AUTH } from "./utils/apollo/entities/auth/operations/auth.queries";
 import { useEffect, useState } from "react";
+import AdminRoute from "./utils/components/AdminRoute";
+import AdminPage from "./admin";
+import Unauthorize from "./pages/unauthorize";
 
 function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
@@ -35,6 +38,7 @@ function App() {
 
     useEffect(() => {
         if (auth) {
+            console.log(auth);
             setEnableLoadScript(true);
         }
     }, [auth]);
@@ -52,8 +56,12 @@ function App() {
                     <Route exact path="/">
                         {auth.isLoggedIn ? <Home /> : <GetStarted />}
                     </Route>
+
+                    <Route path="/401" exact={true}>
+                        <Unauthorize />
+                    </Route>
                     {auth.isLoggedIn ? (
-                        <>
+                        <Switch>
                             <Route path="/profile">
                                 <Profile />
                             </Route>
@@ -87,9 +95,14 @@ function App() {
                             <Route path={"/map"}>
                                 <Map />
                             </Route>
-                        </>
+                            <AdminRoute path="/admin" isAdmin={auth.isAdmin}>
+                                <AdminPage />
+                            </AdminRoute>
+                            <Route path="*" component={NotFound} />
+                        </Switch>
                     ) : null}
-                    <Route path='*' exact={true} component={NotFound} />
+
+                    <Route path="*" exact={true} component={NotFound} />
                 </Switch>
             ) : (
                 <PageLoader />
