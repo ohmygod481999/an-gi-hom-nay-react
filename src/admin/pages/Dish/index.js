@@ -4,7 +4,7 @@ import AdminHeader from "../../components/AdminHeader";
 function Dish() {
     return (
         <>
-            <AdminHeader title="Quản lý món ăn" />
+            <AdminHeader title="Quản lý bữa ăn" />
             <div className="p-3">
                 <div className="card">
                     <div className="card-header">Danh sách món ăn</div>

@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./utils/apollo";
 import { HashRouter as Router } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.render(
     <React.StrictMode>
@@ -13,6 +15,7 @@ ReactDOM.render(
             <Router>
                 <App />
             </Router>
+            <ToastContainer position="bottom-center" />
         </ApolloProvider>
     </React.StrictMode>,
     document.getElementById("root")
