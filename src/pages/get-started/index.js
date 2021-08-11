@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTitle } from "../utils/hooks/useTitle";
+import { useTitle } from "../../utils/hooks/useTitle";
 
 function GetStarted() {
     useTitle("Get started");

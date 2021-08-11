@@ -1,10 +1,10 @@
-import firebase, { authUI } from "../utils/firebase";
 import React, { useEffect } from "react";
-import { useTitle } from "../utils/hooks/useTitle";
 import "firebaseui/dist/firebaseui.css";
 import { useQuery } from "@apollo/client";
-import { GET_AUTH } from "../utils/apollo/entities/auth/operations/auth.queries";
 import { useHistory } from "react-router-dom";
+import { useTitle } from "../../utils/hooks/useTitle";
+import { GET_AUTH } from "../../utils/apollo/entities/auth/operations/auth.queries";
+import firebase, { authUI } from "../../utils/firebase";
 
 function Login() {
     useTitle("Login");
