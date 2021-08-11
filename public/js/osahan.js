@@ -135,7 +135,7 @@ Version: 1.0
       disableAt: false,
       customToggle: $toggle,
       levelSpacing: 40,
-      navTitle: 'Askbootstrap',
+      navTitle: 'Menu',
       levelTitles: true,
       levelTitleAsBack: true,
       pushContent: '#container',

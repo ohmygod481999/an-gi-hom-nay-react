@@ -1,89 +1,56 @@
+import { useQuery } from "@apollo/client";
 import React from "react";
 import { Link } from "react-router-dom";
+import { GET_AUTH } from "../utils/apollo/entities/auth/operations/auth.queries";
 
 function MainNav() {
+    const { data } = useQuery(GET_AUTH);
+    const isAdmin = data.auth.isAdmin;
+
     return (
         <nav id="main-nav">
             <ul className="second-nav">
+                {isAdmin && (
+                    <li>
+                        <a href="#">
+                            <i className="feather-link mr-2" /> Admin
+                        </a>
+                        <ul>
+                            <li>
+                                <Link to="/admin/dish">Quản lý món ăn</Link>
+                            </li>
+                            <li>
+                                <a href="#">Quản lý nhà hàng</a>
+                                <ul>
+                                    <li>
+                                        <Link to="/admin/restaurant/list">
+                                            Danh sách nhà hàng
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/admin/restaurant/create">
+                                            Tạo mới nhà hàng
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                )}
                 <li>
                     <Link to="/">
                         <i className="feather-home mr-2" /> Homepage
                     </Link>
                 </li>
                 <li>
-                    <a href="map.html">
-                        <i className="feather-map-pin mr-2" /> Live Map
-                    </a>
+                    <Link to="/my-dish">
+                        <i className="feather-map-pin mr-2" /> Món của tôi
+                    </Link>
                 </li>
                 <li>
                     <Link to="/profile">
                         <i className="feather-user mr-2" /> Profile
                     </Link>
-                </li>
-                <li>
-                    <a href="#">
-                        <i className="feather-link mr-2" /> Navigation Link
-                        Example
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="#">Link Example 1</a>
-                            <ul>
-                                <li>
-                                    <a href="#">Link Example 1.1</a>
-                                    <ul>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Link Example 1.2</a>
-                                    <ul>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Link</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">Link Example 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Link Example 3</a>
-                        </li>
-                        <li>
-                            <a href="#">Link Example 4</a>
-                        </li>
-                        <li data-nav-custom-content>
-                            <div className="custom-message">
-                                You can add any custom content to your
-                                navigation items. This text is just an example.
-                            </div>
-                        </li>
-                    </ul>
                 </li>
             </ul>
             <ul className="bottom-nav">

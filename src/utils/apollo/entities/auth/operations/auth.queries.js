@@ -11,6 +11,7 @@ export const GET_AUTH = gql`
                 phoneNumber
                 photoURL
             }
+            isAdmin
             accessToken
             isLoggedIn
         }

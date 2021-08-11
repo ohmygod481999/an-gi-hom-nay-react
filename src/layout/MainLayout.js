@@ -7,7 +7,7 @@ function MainLayout(props) {
         <div>
             <div className="osahan-home-page">
                 {props.children}
-                <ActionFooter />
+                {!props.isAdmin ? <ActionFooter /> : null}
             </div>
             <MainNav />
         </div>

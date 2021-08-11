@@ -7,6 +7,8 @@ export const useAuth = () => {
         // auth.signOut()
         auth.onAuthStateChanged(async (user) => {
             if (user) {
+                const idTokenReuslt = await auth.currentUser.getIdTokenResult();
+                const isAdmin = Boolean(idTokenReuslt.claims.isAdmin);
                 const userInfo = {
                     displayName: user.displayName,
                     email: user.email,
@@ -16,9 +18,9 @@ export const useAuth = () => {
                     uid: user.uid,
                 };
                 const idToken = await user.getIdToken();
-                authMutations.setAuth(userInfo, idToken);
+                authMutations.setAuth(userInfo, idToken, isAdmin);
             } else {
-                authMutations.setAuth(null, null);
+                authMutations.setAuth(null, null, null);
             }
         });
     }, []);
