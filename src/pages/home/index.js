@@ -1,8 +1,11 @@
 import React from "react";
 import MainLayout from "../../layout/MainLayout";
 import ModalFilter from "../../layout/ModalFilter";
+import { useTitle } from "../../utils/hooks/useTitle";
 
 function Home() {
+    useTitle("Ăn gì hôm nay");
+    
     return (
         <MainLayout>
             <ModalFilter />

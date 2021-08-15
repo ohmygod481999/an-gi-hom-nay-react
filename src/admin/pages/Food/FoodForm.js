@@ -1,50 +1,108 @@
-import { useMutation, useQuery } from "@apollo/client";
-import React from "react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import _ from "lodash";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { INSERT_FOOD } from "../../../services/food";
-import { GET_MEALS } from "../../../services/meal";
-import useHandleMutationResponse from "../../../utils/hooks/useHandleMutationResponse";
+import {
+    INSERT_FOOD,
+    UPDATE_FOOD,
+} from "../../../utils/apollo/entities/food/operations/food.mutaions";
+import { GET_DETAIL_FOOD } from "../../../utils/apollo/entities/food/operations/food.queries";
+import { GET_MEALS } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
 import AdminHeader2 from "../../components/AdminHeader2";
 
 function FoodForm() {
+    const { id } = useParams();
+    const history = useHistory();
     const {
         register,
         handleSubmit,
-        watch,
-        reset,
         setValue,
         formState: { errors },
     } = useForm();
 
-    const { data, loading } = useQuery(GET_MEALS);
+    const { data } = useQuery(GET_MEALS);
+    const [submitting, setSubmitting] = useState(false);
+
+    const [getDetailFood, detailFoodState] = useLazyQuery(GET_DETAIL_FOOD);
     const meals = (data && data.meal) || [];
 
-    const [insertFood, insertValues] = useMutation(INSERT_FOOD);
-    useHandleMutationResponse(insertValues, () => {
-        alert("...");
-        setValue("name", "");
-        setValue("description", "");
-    });
+    const [insertFood] = useMutation(INSERT_FOOD);
+    const [updateFood] = useMutation(UPDATE_FOOD);
 
-    const submitHandler = (values) => {
+    const submitHandler = async (values) => {
         const { name, meal, description } = values;
-        insertFood({
-            variables: {
-                name,
-                description,
-            },
-        });
+        setSubmitting(true);
+        if (id) {
+            await updateFood({
+                variables: {
+                    id,
+                    name,
+                    description,
+                },
+            })
+                .then((res) => toast["success"]("Thành công"))
+                .catch((e) => {
+                    console.log(e);
+                    toast["error"]("Thất bại");
+                });
+        } else {
+            await insertFood({
+                variables: {
+                    name,
+                    description,
+                },
+            })
+                .then((res) => toast["success"]("Thành công"))
+                .then((res) => {
+                    setValue("name", "");
+                    setValue("description", "");
+                })
+                .then((res) => history.push("/admin/food/list"))
+                .catch((e) => {
+                    console.log(e);
+                    toast["error"]("Thất bại");
+                });
+        }
+        setSubmitting(false);
     };
+
+    useEffect(() => {
+        if (id) {
+            getDetailFood({
+                variables: {
+                    id: parseInt(id),
+                },
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (id && detailFoodState.data) {
+            const { name, description } = detailFoodState.data.food_by_pk;
+            setValue("name", name);
+            setValue("description", description);
+        }
+    }, [detailFoodState]);
 
     return (
         <div className="">
-            <AdminHeader2 title="Tạo món" />
+            <AdminHeader2
+                title={
+                    id
+                        ? _.get(detailFoodState, "data.food_by_pk.name") ||
+                          "Loading..."
+                        : "Tạo món"
+                }
+            />
             <div className="bg-light mb-4 p-3 osahan-cart-item">
                 <div className="osahan-cart-item-profile bg-white rounded shadow p-3 mt-n5">
                     <div className="flex-column">
                         <h6 className="font-weight-bold">
-                            Nhập thông tin về món ăn của bạn
+                            {id
+                                ? "Chỉnh sửa thông tin món ăn"
+                                : "Nhập thông tin về món ăn của bạn"}
                         </h6>
                         <p className="text-muted">
                             Proident laborum ea minim mollit eiusmod ea dolore
@@ -132,9 +190,9 @@ function FoodForm() {
                             <button
                                 className={`btn btn-primary btn-block`}
                                 onClick={handleSubmit(submitHandler)}
-                                disabled={insertValues.loading}
+                                disabled={submitting}
                             >
-                                {insertValues.loading && (
+                                {submitting && (
                                     <span
                                         className="spinner-border spinner-border-sm"
                                         role="status"
