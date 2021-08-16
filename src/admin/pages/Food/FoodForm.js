@@ -6,7 +6,9 @@ import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
     INSERT_FOOD,
+    INSERT_MEALFOOD,
     UPDATE_FOOD,
+    UPDATE_MEALFOOD,
 } from "../../../utils/apollo/entities/food/operations/food.mutaions";
 import { GET_DETAIL_FOOD } from "../../../utils/apollo/entities/food/operations/food.queries";
 import { GET_MEALS } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
@@ -27,11 +29,13 @@ function FoodForm() {
 
     const { data } = useQuery(GET_MEALS);
     const [submitting, setSubmitting] = useState(false);
+    const [mealFood, setMealFood] = useState(null)
 
     const [getDetailFood, detailFoodState] = useLazyQuery(GET_DETAIL_FOOD);
     const meals = (data && data.meal) || [];
-
     const [insertFood] = useMutation(INSERT_FOOD);
+    const [insertMealFood] = useMutation(INSERT_MEALFOOD);
+    const [updateMealFood] = useMutation(UPDATE_MEALFOOD);
     const [updateFood] = useMutation(UPDATE_FOOD);
 
     const [previewImg, setPreviewImg] = useState(null);
@@ -39,6 +43,7 @@ function FoodForm() {
     const submitHandler = async (values) => {
         const { name, meal, description, image } = values;
         setSubmitting(true);
+        // update
         if (id) {
             let imgUrl = previewImg;
             if (image.length > 0) {
@@ -53,11 +58,21 @@ function FoodForm() {
                     img: imgUrl,
                 },
             })
+                .then((res) => {
+                    return updateMealFood({
+                        variables: {
+                            id: mealFood.id,
+                            food_id: id,
+                            meal_id: parseInt(meal),
+                        },
+                    });
+                })
                 .then((res) => toast["success"]("Thành công"))
                 .catch((e) => {
                     console.log(e);
                     toast["error"]("Thất bại");
                 });
+            // create
         } else {
             let imgUrl = null;
             if (image.length > 0) {
@@ -71,6 +86,15 @@ function FoodForm() {
                     img: imgUrl,
                 },
             })
+                .then((res) => {
+                    const idFood = res.data.insert_food.returning[0].id;
+                    return insertMealFood({
+                        variables: {
+                            food_id: idFood,
+                            meal_id: parseInt(meal),
+                        },
+                    });
+                })
                 .then((res) => toast["success"]("Thành công"))
                 .then((res) => {
                     setValue("name", "");
@@ -104,9 +128,15 @@ function FoodForm() {
     useEffect(() => {
         if (id && detailFoodState.data) {
             const { name, description, img } = detailFoodState.data.food_by_pk;
+            const meals = detailFoodState.data.mealfood;
+
             setPreviewImg(img);
             setValue("name", name);
             setValue("description", description);
+            if (meals.length > 0) {
+                setValue("meal", meals[0].meal.id);
+                setMealFood(meals[0])
+            }
         }
     }, [detailFoodState]);
 
@@ -170,7 +200,7 @@ function FoodForm() {
                                     })}
                                 >
                                     {meals.map((meal) => (
-                                        <option key={meal.id}>
+                                        <option key={meal.id} value={meal.id}>
                                             {meal.name}
                                         </option>
                                     ))}

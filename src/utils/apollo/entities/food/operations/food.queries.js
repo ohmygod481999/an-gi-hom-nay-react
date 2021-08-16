@@ -23,5 +23,13 @@ export const GET_DETAIL_FOOD = gql`
             description
             img
         }
+        mealfood(where: { food_id: { _eq: $id } }) {
+            id
+            food_id
+            meal {
+                id
+                name
+            }
+        }
     }
 `;
