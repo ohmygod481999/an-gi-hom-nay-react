@@ -20,8 +20,10 @@ function FoodForm() {
         register,
         handleSubmit,
         setValue,
+        watch,
         formState: { errors },
     } = useForm();
+    const formImg = watch("image");
 
     const { data } = useQuery(GET_MEALS);
     const [submitting, setSubmitting] = useState(false);
@@ -32,15 +34,23 @@ function FoodForm() {
     const [insertFood] = useMutation(INSERT_FOOD);
     const [updateFood] = useMutation(UPDATE_FOOD);
 
+    const [previewImg, setPreviewImg] = useState(null);
+
     const submitHandler = async (values) => {
         const { name, meal, description, image } = values;
         setSubmitting(true);
         if (id) {
+            let imgUrl = previewImg;
+            if (image.length > 0) {
+                const file = image[0];
+                imgUrl = await uploadCloudStorage(file);
+            }
             await updateFood({
                 variables: {
                     id,
                     name,
                     description,
+                    img: imgUrl,
                 },
             })
                 .then((res) => toast["success"]("Thành công"))
@@ -86,8 +96,15 @@ function FoodForm() {
     }, []);
 
     useEffect(() => {
+        if (formImg && formImg.length > 0) {
+            setPreviewImg(URL.createObjectURL(formImg[0]));
+        }
+    }, [formImg]);
+
+    useEffect(() => {
         if (id && detailFoodState.data) {
-            const { name, description } = detailFoodState.data.food_by_pk;
+            const { name, description, img } = detailFoodState.data.food_by_pk;
+            setPreviewImg(img);
             setValue("name", name);
             setValue("description", description);
         }
@@ -193,6 +210,13 @@ function FoodForm() {
                                     id="image"
                                     {...register("image")}
                                 />
+                                {previewImg && (
+                                    <img
+                                        className="w-100 mt-1"
+                                        src={previewImg}
+                                        alt="preview img"
+                                    />
+                                )}
                             </div>
                             <button
                                 className={`btn btn-primary btn-block`}

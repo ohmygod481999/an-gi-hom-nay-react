@@ -21,6 +21,7 @@ export const GET_DETAIL_FOOD = gql`
             id
             name
             description
+            img
         }
     }
 `;

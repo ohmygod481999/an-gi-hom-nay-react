@@ -29,10 +29,10 @@ export const DELETE_FOOD = gql`
 `;
 
 export const UPDATE_FOOD = gql`
-    mutation UpdateFood($id: Int!, $description: String, $name: String) {
+    mutation UpdateFood($id: Int!, $description: String, $name: String, $img: String) {
         update_food(
             where: { id: { _eq: $id } }
-            _set: { description: $description, name: $name }
+            _set: { description: $description, name: $name, img: $img }
         ) {
             affected_rows
             returning {

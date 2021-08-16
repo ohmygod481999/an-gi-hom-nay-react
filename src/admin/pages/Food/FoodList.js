@@ -40,7 +40,7 @@ function FoodList() {
                         <div>
                             <button
                                 type="button"
-                                className="btn btn-danger btn-sm mr-2"
+                                className="btn btn-danger btn-sm mr-2 mb-2"
                                 disabled={loading}
                                 data-toggle="modal"
                                 data-target="deleteModal"
@@ -80,7 +80,7 @@ function FoodList() {
                             <Link to={`/admin/food/edit/${value.id}`}>
                                 <button
                                     type="button"
-                                    className="btn btn-info btn-sm"
+                                    className="btn btn-info btn-sm  mb-2"
                                 >
                                     Edit
                                 </button>
