@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const INSERT_FOOD = gql`
-    mutation InsertFood($description: String, $name: String) {
-        insert_food(objects: { description: $description, name: $name }) {
+    mutation InsertFood($description: String, $name: String, $img: String) {
+        insert_food(
+            objects: { description: $description, name: $name, img: $img }
+        ) {
             affected_rows
             returning {
                 description
@@ -28,7 +30,10 @@ export const DELETE_FOOD = gql`
 
 export const UPDATE_FOOD = gql`
     mutation UpdateFood($id: Int!, $description: String, $name: String) {
-        update_food(where: { id: { _eq: $id } }, _set: {description: $description, name: $name}) {
+        update_food(
+            where: { id: { _eq: $id } }
+            _set: { description: $description, name: $name }
+        ) {
             affected_rows
             returning {
                 name

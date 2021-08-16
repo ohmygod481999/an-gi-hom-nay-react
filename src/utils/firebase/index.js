@@ -14,4 +14,24 @@ firebase.initializeApp(firebaseConfig);
 
 export const auth = firebase.auth();
 export const authUI = new firebaseui.auth.AuthUI(auth);
+export const storage = firebase.storage();
+
+export const uploadCloudStorage = async (file) => {
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`public_media/${file.name}`);
+    const uploadTask = fileRef.put(file);
+    return new Promise((res, rej) => {
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {},
+            (error) => rej(error),
+            () => {
+                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    res(downloadURL);
+                });
+            }
+        );
+    });
+};
+
 export default firebase;

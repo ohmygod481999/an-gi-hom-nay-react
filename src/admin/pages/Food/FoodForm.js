@@ -10,6 +10,7 @@ import {
 } from "../../../utils/apollo/entities/food/operations/food.mutaions";
 import { GET_DETAIL_FOOD } from "../../../utils/apollo/entities/food/operations/food.queries";
 import { GET_MEALS } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
+import { uploadCloudStorage } from "../../../utils/firebase";
 import AdminHeader2 from "../../components/AdminHeader2";
 
 function FoodForm() {
@@ -32,7 +33,7 @@ function FoodForm() {
     const [updateFood] = useMutation(UPDATE_FOOD);
 
     const submitHandler = async (values) => {
-        const { name, meal, description } = values;
+        const { name, meal, description, image } = values;
         setSubmitting(true);
         if (id) {
             await updateFood({
@@ -48,10 +49,16 @@ function FoodForm() {
                     toast["error"]("Thất bại");
                 });
         } else {
+            let imgUrl = null;
+            if (image.length > 0) {
+                const file = image[0];
+                imgUrl = await uploadCloudStorage(file);
+            }
             await insertFood({
                 variables: {
                     name,
                     description,
+                    img: imgUrl,
                 },
             })
                 .then((res) => toast["success"]("Thành công"))
