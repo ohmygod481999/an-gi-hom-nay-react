@@ -5,17 +5,26 @@ import { useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
+    INSERT_DISH,
+    UPDATE_DISH,
+} from "../../../utils/apollo/entities/dish/operations/dish.mutations";
+import { GET_DETAIL_DISH } from "../../../utils/apollo/entities/dish/operations/dish.queries";
+import {
     INSERT_FOOD,
     INSERT_MEALFOOD,
     UPDATE_FOOD,
     UPDATE_MEALFOOD,
 } from "../../../utils/apollo/entities/food/operations/food.mutaions";
-import { GET_DETAIL_FOOD } from "../../../utils/apollo/entities/food/operations/food.queries";
+import {
+    GET_DETAIL_FOOD,
+    GET_FOODS,
+} from "../../../utils/apollo/entities/food/operations/food.queries";
 import { GET_MEALS } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
+import { GET_RESTAURANTS } from "../../../utils/apollo/entities/restaurant/restaurant.queries";
 import { uploadCloudStorage } from "../../../utils/firebase";
 import AdminHeader2 from "../../components/AdminHeader2";
 
-function FoodForm() {
+function DishForm() {
     const { id } = useParams();
     const history = useHistory();
     const {
@@ -27,21 +36,23 @@ function FoodForm() {
     } = useForm();
     const formImg = watch("image");
 
-    const { data } = useQuery(GET_MEALS);
+    const foodData = useQuery(GET_FOODS);
+    const restaurantsData = useQuery(GET_RESTAURANTS);
     const [submitting, setSubmitting] = useState(false);
-    const [mealFood, setMealFood] = useState(null)
 
-    const [getDetailFood, detailFoodState] = useLazyQuery(GET_DETAIL_FOOD);
-    const meals = (data && data.meal) || [];
-    const [insertFood] = useMutation(INSERT_FOOD);
-    const [insertMealFood] = useMutation(INSERT_MEALFOOD);
-    const [updateMealFood] = useMutation(UPDATE_MEALFOOD);
-    const [updateFood] = useMutation(UPDATE_FOOD);
+    const [getDetailDish, detailDishState] = useLazyQuery(GET_DETAIL_DISH);
+    const foods = (foodData.data && foodData.data.food) || [];
+    const restaurants =
+        (restaurantsData.data && restaurantsData.data.restaurant) || [];
+
+    const [insertDish] = useMutation(INSERT_DISH);
+    const [updateDish] = useMutation(UPDATE_DISH);
 
     const [previewImg, setPreviewImg] = useState(null);
 
     const submitHandler = async (values) => {
-        const { name, meal, description, image } = values;
+        const { name, price, food, restaurant, description, image } = values;
+
         setSubmitting(true);
         // update
         if (id) {
@@ -50,23 +61,17 @@ function FoodForm() {
                 const file = image[0];
                 imgUrl = await uploadCloudStorage(file);
             }
-            await updateFood({
+            await updateDish({
                 variables: {
                     id,
                     name,
+                    price,
+                    food_id: parseInt(food),
+                    restaurant_id: parseInt(restaurant),
                     description,
                     img: imgUrl,
                 },
             })
-                .then((res) => {
-                    return updateMealFood({
-                        variables: {
-                            id: mealFood.id,
-                            food_id: id,
-                            meal_id: parseInt(meal),
-                        },
-                    });
-                })
                 .then((res) => toast["success"]("Thành công"))
                 .catch((e) => {
                     console.log(e);
@@ -79,28 +84,22 @@ function FoodForm() {
                 const file = image[0];
                 imgUrl = await uploadCloudStorage(file);
             }
-            await insertFood({
+            await insertDish({
                 variables: {
                     name,
+                    price,
+                    food_id: parseInt(food),
+                    restaurant_id: parseInt(restaurant),
                     description,
                     img: imgUrl,
                 },
             })
-                .then((res) => {
-                    const idFood = res.data.insert_food.returning[0].id;
-                    return insertMealFood({
-                        variables: {
-                            food_id: idFood,
-                            meal_id: parseInt(meal),
-                        },
-                    });
-                })
                 .then((res) => toast["success"]("Thành công"))
                 .then((res) => {
                     setValue("name", "");
                     setValue("description", "");
                 })
-                .then((res) => history.push("/admin/food/list"))
+                .then((res) => history.push("/admin/dish/list"))
                 .catch((e) => {
                     console.log(e);
                     toast["error"]("Thất bại");
@@ -111,7 +110,7 @@ function FoodForm() {
 
     useEffect(() => {
         if (id) {
-            getDetailFood({
+            getDetailDish({
                 variables: {
                     id: parseInt(id),
                 },
@@ -126,28 +125,27 @@ function FoodForm() {
     }, [formImg]);
 
     useEffect(() => {
-        if (id && detailFoodState.data) {
-            const { name, description, img } = detailFoodState.data.food_by_pk;
-            const meals = detailFoodState.data.mealfood;
+        if (id && detailDishState.data) {
+            const { name, description, price, food_id, restaurent_id, img } =
+                detailDishState.data.dish_by_pk;
 
             setPreviewImg(img);
             setValue("name", name);
             setValue("description", description);
-            if (meals.length > 0) {
-                setValue("meal", meals[0].meal.id);
-                setMealFood(meals[0])
-            }
+            setValue("price", price);
+            setValue("food", food_id);
+            setValue("restaurent", restaurent_id);
         }
-    }, [detailFoodState]);
+    }, [detailDishState]);
 
     return (
         <div className="">
             <AdminHeader2
                 title={
                     id
-                        ? _.get(detailFoodState, "data.food_by_pk.name") ||
+                        ? _.get(detailDishState, "data.food_by_pk.name") ||
                           "Loading..."
-                        : "Tạo loại món"
+                        : "Tạo món"
                 }
             />
             <div className="bg-light mb-4 p-3 osahan-cart-item">
@@ -168,7 +166,7 @@ function FoodForm() {
                                     htmlFor="name"
                                     className="small font-weight-bold"
                                 >
-                                    Tên loại món
+                                    Tên món
                                 </label>
                                 <input
                                     type="text"
@@ -187,25 +185,76 @@ function FoodForm() {
                             </div>
                             <div className="form-group">
                                 <label
+                                    htmlFor="name"
+                                    className="small font-weight-bold"
+                                >
+                                    Giá
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="30.000đ"
+                                    id="price"
+                                    {...register("price", {
+                                        required: true,
+                                    })}
+                                />
+                                {errors.price && (
+                                    <div className="invalid-feedback d-block">
+                                        Không được để trống
+                                    </div>
+                                )}
+                            </div>
+                            <div className="form-group">
+                                <label
                                     htmlFor="meal"
                                     className="small font-weight-bold"
                                 >
-                                    Món ăn vào bữa nào?
+                                    Loại món
                                 </label>
                                 <select
                                     className="form-control"
-                                    id="meal"
-                                    {...register("meal", {
+                                    id="food"
+                                    {...register("food", {
                                         required: true,
                                     })}
                                 >
-                                    {meals.map((meal) => (
-                                        <option key={meal.id} value={meal.id}>
-                                            {meal.name}
+                                    {foods.map((food) => (
+                                        <option key={food.id} value={food.id}>
+                                            {food.name}
                                         </option>
                                     ))}
                                 </select>
                                 {errors.name && (
+                                    <div className="invalid-feedback d-block">
+                                        Không được để trống
+                                    </div>
+                                )}
+                            </div>
+                            <div className="form-group">
+                                <label
+                                    htmlFor="restaurant"
+                                    className="small font-weight-bold"
+                                >
+                                    Nhà hàng
+                                </label>
+                                <select
+                                    className="form-control"
+                                    id="restaurant"
+                                    {...register("restaurant", {
+                                        required: true,
+                                    })}
+                                >
+                                    {restaurants.map((restaurant) => (
+                                        <option
+                                            key={restaurant.id}
+                                            value={restaurant.id}
+                                        >
+                                            {restaurant.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.restaurant && (
                                     <div className="invalid-feedback d-block">
                                         Không được để trống
                                     </div>
@@ -270,4 +319,4 @@ function FoodForm() {
     );
 }
 
-export default FoodForm;
+export default DishForm;

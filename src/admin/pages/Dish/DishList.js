@@ -2,16 +2,18 @@ import { useMutation } from "@apollo/client";
 import React, { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { DELETE_DISH } from "../../../utils/apollo/entities/dish/operations/dish.mutations";
+import { GET_DISH_PAGE } from "../../../utils/apollo/entities/dish/operations/dish.queries";
 import { DELETE_FOOD } from "../../../utils/apollo/entities/food/operations/food.mutaions";
 import { GET_FOODS_PAGE } from "../../../utils/apollo/entities/food/operations/food.queries";
 import MySwal from "../../../utils/components/MySwal";
 import AdminHeader2 from "../../components/AdminHeader2";
 import MyTable from "../../components/MyTable";
 
-function FoodList() {
+function DishList() {
     const tableRef = useRef();
 
-    const [deleteFood] = useMutation(DELETE_FOOD);
+    const [deleteDish] = useMutation(DELETE_DISH);
 
     const columns = useMemo(
         () => [
@@ -20,15 +22,21 @@ function FoodList() {
                 accessor: "id",
             },
             {
-                Header: "Tên loại món",
+                Header: "Tên",
                 accessor: "name",
             },
             {
-                Header: "Mô tả",
-                accessor: "description",
+                Header: "Món",
+                accessor: "food",
                 Cell: ({ value }) => {
-                    if (!value) return "N/A";
-                    return value;
+                    return value.name;
+                },
+            },
+            {
+                Header: "Nhà hàng",
+                accessor: "restaurant",
+                Cell: ({ value }) => {
+                    return value.name;
                 },
             },
             {
@@ -53,7 +61,7 @@ function FoodList() {
                                     }).then(({ isConfirmed }) => {
                                         if (isConfirmed) {
                                             setLoading(true);
-                                            deleteFood({
+                                            deleteDish({
                                                 variables: {
                                                     id: value.id,
                                                 },
@@ -77,7 +85,7 @@ function FoodList() {
                             >
                                 Delete
                             </button>
-                            <Link to={`/admin/food/edit/${value.id}`}>
+                            <Link to={`/admin/dish/edit/${value.id}`}>
                                 <button
                                     type="button"
                                     className="btn btn-info btn-sm  mb-2"
@@ -96,9 +104,9 @@ function FoodList() {
     return (
         <div className="">
             <AdminHeader2
-                title="Danh sách loại món"
+                title="Danh sách món ăn"
                 extraLink={{
-                    path: "/admin/food/create",
+                    path: "/admin/dish/create",
                     title: "Tạo mới",
                 }}
             />
@@ -108,10 +116,10 @@ function FoodList() {
                         <MyTable
                             ref={tableRef}
                             columns={columns}
-                            gqlQuery={GET_FOODS_PAGE}
-                            dataParser={(value) => value.food}
+                            gqlQuery={GET_DISH_PAGE}
+                            dataParser={(value) => value.dish}
                             totalCountParser={(value) =>
-                                value.food_aggregate.aggregate.count
+                                value.dish_aggregate.aggregate.count
                             }
                         />
                     </div>
@@ -121,4 +129,4 @@ function FoodList() {
     );
 }
 
-export default FoodList;
+export default DishList;

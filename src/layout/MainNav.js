@@ -17,7 +17,9 @@ function MainNav() {
                         </a>
                         <ul>
                             <li>
-                                <Link to="/admin/dish">Quản lý bữa ăn</Link>
+                                <Link to="/admin/dish/list">
+                                    Quản lý món ăn
+                                </Link>
                             </li>
                             <li>
                                 <a href="#">Quản lý nhà hàng</a>
@@ -35,19 +37,9 @@ function MainNav() {
                                 </ul>
                             </li>
                             <li>
-                                <a href="#">Quản lý món ăn</a>
-                                <ul>
-                                    <li>
-                                        <Link to="/admin/food/list">
-                                            Danh sách món
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/admin/food/create">
-                                            Tạo mới món
-                                        </Link>
-                                    </li>
-                                </ul>
+                                <Link to="/admin/food/list">
+                                    Quản lý loại món
+                                </Link>
                             </li>
                         </ul>
                     </li>

@@ -1,46 +1,23 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
 import AdminHeader from "../../components/AdminHeader";
+import DishForm from "./DishForm";
+import DishList from "./DishList";
 
 function Dish() {
     return (
         <>
-            <AdminHeader title="Quản lý bữa ăn" />
-            <div className="p-3">
-                <div className="card">
-                    <div className="card-header">Danh sách món ăn</div>
-                    <div className="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">First</th>
-                                    <th scope="col">Last</th>
-                                    <th scope="col">Handle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td colspan="2">Larry the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <Switch>
+                <Route path="/admin/dish/list">
+                    <DishList />
+                </Route>
+                <Route path="/admin/dish/create">
+                    <DishForm />
+                </Route>
+                <Route path="/admin/dish/edit/:id">
+                    <DishForm />
+                </Route>
+            </Switch>
         </>
     );
 }
