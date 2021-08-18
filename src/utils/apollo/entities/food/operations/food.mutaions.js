@@ -24,6 +24,14 @@ export const INSERT_MEALFOOD = gql`
     }
 `;
 
+export const INSERT_MEALFOODS = gql`
+    mutation InsertMealFoods($objects: [mealfood_insert_input!]!) {
+        insert_mealfood(objects: $objects) {
+            affected_rows
+        }
+    }
+`;
+
 export const DELETE_FOOD = gql`
     mutation DeleteFood($id: Int) {
         delete_food(where: { id: { _eq: $id } }) {
@@ -70,6 +78,14 @@ export const UPDATE_MEALFOOD = gql`
                 food_id
                 meal_id
             }
+        }
+    }
+`;
+
+export const DELETE_MEALFOODS_BY_FOODID = gql`
+    mutation DeleteMealFoods($food_id: Int!) {
+        delete_mealfood(where: { food_id: { _eq: $food_id } }) {
+            affected_rows
         }
     }
 `;

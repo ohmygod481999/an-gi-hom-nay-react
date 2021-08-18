@@ -31,7 +31,7 @@ import Favorites from "./pages/favorites";
 
 function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
-    // useThirdPartyScript(thirdPartyScripts, enableLoadScript);
+    useThirdPartyScript(thirdPartyScripts, enableLoadScript);
     useAuth();
 
     const { data } = useQuery(GET_AUTH);

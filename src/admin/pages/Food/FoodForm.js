@@ -1,12 +1,15 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
+import Select from "react-select";
 import { toast } from "react-toastify";
 import {
+    DELETE_MEALFOODS_BY_FOODID,
     INSERT_FOOD,
     INSERT_MEALFOOD,
+    INSERT_MEALFOODS,
     UPDATE_FOOD,
     UPDATE_MEALFOOD,
 } from "../../../utils/apollo/entities/food/operations/food.mutaions";
@@ -19,6 +22,7 @@ function FoodForm() {
     const { id } = useParams();
     const history = useHistory();
     const {
+        control,
         register,
         handleSubmit,
         setValue,
@@ -29,19 +33,19 @@ function FoodForm() {
 
     const { data } = useQuery(GET_MEALS);
     const [submitting, setSubmitting] = useState(false);
-    const [mealFood, setMealFood] = useState(null)
 
     const [getDetailFood, detailFoodState] = useLazyQuery(GET_DETAIL_FOOD);
     const meals = (data && data.meal) || [];
     const [insertFood] = useMutation(INSERT_FOOD);
-    const [insertMealFood] = useMutation(INSERT_MEALFOOD);
-    const [updateMealFood] = useMutation(UPDATE_MEALFOOD);
+    const [insertMealFoods] = useMutation(INSERT_MEALFOODS);
+    const [deleteMealFoodsByFoodId] = useMutation(DELETE_MEALFOODS_BY_FOODID);
     const [updateFood] = useMutation(UPDATE_FOOD);
 
     const [previewImg, setPreviewImg] = useState(null);
 
     const submitHandler = async (values) => {
-        const { name, meal, description, image } = values;
+        const { name, meals, description, image } = values;
+
         setSubmitting(true);
         // update
         if (id) {
@@ -59,11 +63,19 @@ function FoodForm() {
                 },
             })
                 .then((res) => {
-                    return updateMealFood({
+                    return deleteMealFoodsByFoodId({
                         variables: {
-                            id: mealFood.id,
                             food_id: id,
-                            meal_id: parseInt(meal),
+                        },
+                    });
+                })
+                .then((res) => {
+                    return insertMealFoods({
+                        variables: {
+                            objects: meals.map((meal) => ({
+                                food_id: id,
+                                meal_id: parseInt(meal.value),
+                            })),
                         },
                     });
                 })
@@ -88,10 +100,12 @@ function FoodForm() {
             })
                 .then((res) => {
                     const idFood = res.data.insert_food.returning[0].id;
-                    return insertMealFood({
+                    return insertMealFoods({
                         variables: {
-                            food_id: idFood,
-                            meal_id: parseInt(meal),
+                            objects: meals.map((meal) => ({
+                                food_id: idFood,
+                                meal_id: parseInt(meal.value),
+                            })),
                         },
                     });
                 })
@@ -134,8 +148,11 @@ function FoodForm() {
             setValue("name", name);
             setValue("description", description);
             if (meals.length > 0) {
-                setValue("meal", meals[0].meal.id);
-                setMealFood(meals[0])
+                console.log(meals)
+                setValue("meals", meals.map(meal => ({
+                    value: meal.meal.id,
+                    label: meal.meal.name,
+                })));
             }
         }
     }, [detailFoodState]);
@@ -187,12 +204,36 @@ function FoodForm() {
                             </div>
                             <div className="form-group">
                                 <label
-                                    htmlFor="meal"
+                                    htmlFor="meals"
                                     className="small font-weight-bold"
                                 >
                                     Món ăn vào bữa nào?
                                 </label>
-                                <select
+                                <Controller
+                                    control={control}
+                                    name="meals"
+                                    render={({
+                                        field: {
+                                            onChange,
+                                            onBlur,
+                                            value,
+                                            name,
+                                            ref,
+                                        },
+                                    }) => (
+                                        <Select
+                                            isMulti={true}
+                                            options={meals.map((meal) => ({
+                                                value: meal.id,
+                                                label: meal.name,
+                                            }))}
+                                            onChange={onChange}
+                                            value={value}
+                                        />
+                                    )}
+                                />
+
+                                {/* <select
                                     className="form-control"
                                     id="meal"
                                     {...register("meal", {
@@ -204,8 +245,8 @@ function FoodForm() {
                                             {meal.name}
                                         </option>
                                     ))}
-                                </select>
-                                {errors.name && (
+                                </select> */}
+                                {errors.meals && (
                                     <div className="invalid-feedback d-block">
                                         Không được để trống
                                     </div>
