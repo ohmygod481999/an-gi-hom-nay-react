@@ -34,6 +34,21 @@ export const GET_DETAIL_DISH = gql`
             description
             food_id
             restaurant_id
+            restaurant {
+              id
+              name
+              address
+              open
+              close
+              latlng
+              dishes {
+                id
+                name
+                price
+                img
+                description
+              }
+            }
             img
         }
     }

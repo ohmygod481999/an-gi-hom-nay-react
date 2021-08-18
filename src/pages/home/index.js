@@ -9,6 +9,7 @@ import ModalFilter from "../../layout/ModalFilter";
 import { GET_MEALS } from "../../utils/apollo/entities/meal/operations/meal.quereis";
 import { useThirdPartyScript } from "../../utils/hooks/useThirdPartyScript";
 import { useTitle } from "../../utils/hooks/useTitle";
+import DishDetail from "./pages/DishDetail";
 import PickMeal from "./pages/PickMeal";
 import Random from "./pages/Random";
 
@@ -17,31 +18,15 @@ function Home() {
 
     return (
         <MainLayout>
-            <ModalFilter />
-            <div className="bg-primary p-3">
-                <div className="text-white">
-                    <div className="title d-flex align-items-center">
-                        <a className="toggle" href="#">
-                            <span />
-                        </a>
-                        <h4 className="font-weight-bold m-0 pl-5">Browse</h4>
-                        <a
-                            className="text-white font-weight-bold ml-auto"
-                            data-toggle="modal"
-                            data-target="#exampleModal"
-                            href="#"
-                        >
-                            Filter
-                        </a>
-                    </div>
-                </div>
-            </div>
             {/* Filters */}
             <div className="bg-light">
                 {/* slider */}
                 <Switch>
                     <Route path="/home/random/:id">
                         <Random />
+                    </Route>
+                    <Route path="/home/dish/:dishId">
+                        <DishDetail />
                     </Route>
                     <Route path="/home">
                         <PickMeal />

@@ -23,9 +23,11 @@ export const GET_MEAL = gql`
                         name
                         price
                         img
+                        description
                         restaurant {
                             id
                             name
+                            address
                         }
                     }
                 }

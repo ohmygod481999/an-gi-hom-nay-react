@@ -1,6 +1,8 @@
 import { useQuery } from "@apollo/client";
 import React, { useMemo, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
+import ModalFilter from "../../../layout/ModalFilter";
+import { utils } from "../../../utils";
 import { GET_MEAL } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
 
 function Random() {
@@ -41,14 +43,33 @@ function Random() {
             setTimeout(() => {
                 const randomIndex = getRandomInt(0, dishes.length - 1);
                 setRandomDish(dishes[randomIndex]);
-                console.log(dishes[randomIndex])
-                setLoading(false)
+                console.log(dishes[randomIndex]);
+                setLoading(false);
             }, 1500);
         }
     };
 
     return (
         <div>
+            <ModalFilter />
+            <div className="bg-primary p-3">
+                <div className="text-white">
+                    <div className="title d-flex align-items-center">
+                        <a className="toggle" href="#">
+                            <span />
+                        </a>
+                        <h4 className="font-weight-bold m-0 pl-5">Browse</h4>
+                        <a
+                            className="text-white font-weight-bold ml-auto"
+                            data-toggle="modal"
+                            data-target="#exampleModal"
+                            href="#"
+                        >
+                            Filter
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div className="px-3 pt-3 title d-flex align-items-center">
                 <h5 className="m-0">Để mình gợi ý cho bạn {meal.name} nhé</h5>
                 <a className="font-weight-bold ml-auto" href="trending.html">
@@ -56,7 +77,7 @@ function Random() {
                 </a>
             </div>
             <div
-                className="text-primary font-weight-bold px-3 pt-2"
+                className="text-primary font-weight-bold px-3 pt-2 d-inline-block"
                 onClick={() => history.goBack()}
             >
                 <i className="feather-chevron-left" /> Back
@@ -100,7 +121,7 @@ function Random() {
                                 </div>
                                 <div className="member-plan position-absolute">
                                     <span className="badge badge-dark">
-                                        Promoted
+                                        {utils.formatMoney(randomDish.price)}
                                     </span>
                                 </div>
                                 <a href="restaurant.html">
@@ -131,15 +152,30 @@ function Random() {
                                         </span>{" "}
                                         <span className="float-right text-black-100">
                                             {" "}
-                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(randomDish.price)}
+                                            {randomDish.restaurant.address}
                                         </span>
                                     </p>
                                 </div>
-                                <div className="list-card-badge">
-                                    <span className="badge badge-danger">
-                                        OFFER
-                                    </span>{" "}
-                                    <small> Use Coupon OSAHAN50</small>
+                                <div className="row">
+                                    <div className="col-8">
+                                        <div className="list-card-badge">
+                                            <span className="badge badge-danger">
+                                                OFFER
+                                            </span>{" "}
+                                            <small>
+                                                {randomDish.description}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div className="col-4 d-flex justify-content-end">
+                                        <Link
+                                            to={"/home/dish/" + randomDish.id}
+                                        >
+                                            <button className="btn btn-primary">
+                                                CHỌN
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
