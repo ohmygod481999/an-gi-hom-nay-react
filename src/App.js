@@ -1,4 +1,4 @@
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 import GetStarted from "./pages/get-started";
 import Login from "./pages/login";
@@ -27,10 +27,11 @@ import { useEffect, useState } from "react";
 import AdminRoute from "./utils/components/AdminRoute";
 import AdminPage from "./admin";
 import Unauthorize from "./pages/unauthorize";
+import Favorites from "./pages/favorites";
 
 function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
-    useThirdPartyScript(thirdPartyScripts, enableLoadScript);
+    // useThirdPartyScript(thirdPartyScripts, enableLoadScript);
     useAuth();
 
     const { data } = useQuery(GET_AUTH);
@@ -54,6 +55,9 @@ function App() {
                         <Landing />
                     </Route>
                     <Route exact path="/">
+                        <Redirect to="/home" />
+                    </Route>
+                    <Route path="/home">
                         {auth.isLoggedIn ? <Home /> : <GetStarted />}
                     </Route>
 
@@ -91,6 +95,9 @@ function App() {
                             </Route>
                             <Route path={"/most-popular"}>
                                 <MostPopular />
+                            </Route>
+                            <Route path={"/favorites"}>
+                                <Favorites />
                             </Route>
                             <Route path={"/map"}>
                                 <Map />

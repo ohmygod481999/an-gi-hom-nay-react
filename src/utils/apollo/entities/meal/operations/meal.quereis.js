@@ -8,3 +8,28 @@ export const GET_MEALS = gql`
         }
     }
 `;
+
+export const GET_MEAL = gql`
+    query MyQuery($id: Int!) {
+        meal_by_pk(id: $id) {
+            id
+            name
+            mealfoods {
+                food {
+                    id
+                    name
+                    dishes {
+                        id
+                        name
+                        price
+                        img
+                        restaurant {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
