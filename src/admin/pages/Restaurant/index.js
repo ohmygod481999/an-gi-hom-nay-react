@@ -7,12 +7,14 @@ import RestaurantList from "./RestaurantList";
 function Restaurant() {
     return (
         <>
-            <AdminHeader title="Quản lý nhà hàng" />
             <Switch>
                 <Route path="/admin/restaurant/list">
                     <RestaurantList />
                 </Route>
                 <Route path="/admin/restaurant/create">
+                    <RestaurantForm />
+                </Route>
+                <Route path="/admin/restaurant/edit/:id">
                     <RestaurantForm />
                 </Route>
             </Switch>
