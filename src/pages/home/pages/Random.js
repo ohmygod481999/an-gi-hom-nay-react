@@ -50,7 +50,11 @@ function Random() {
     };
 
     return (
-        <div>
+        <div
+            style={{
+                paddingBottom: 90,
+            }}
+        >
             <ModalFilter />
             <div className="bg-primary p-3">
                 <div className="text-white">
@@ -129,7 +133,10 @@ function Random() {
                                     </span>
                                 </div>
                                 <div className="favourite-heart text-danger position-absolute">
-                                    <a href="#">
+                                    <a
+                                        href="#"
+                                        onClick={(e) => e.preventDefault()}
+                                    >
                                         <i className="feather-heart" />
                                     </a>
                                 </div>
@@ -138,7 +145,7 @@ function Random() {
                                         {utils.formatMoney(randomDish.price)}
                                     </span>
                                 </div>
-                                <a href="restaurant.html">
+                                <a>
                                     <img
                                         src={randomDish.img}
                                         // src="img/trending1.png"
@@ -150,7 +157,7 @@ function Random() {
                                 <div className="list-card-body">
                                     <h6 className="mb-1">
                                         <a
-                                            href="restaurant.html"
+                                            // href="restaurant.html"
                                             className="text-black"
                                         >
                                             {randomDish.name}
