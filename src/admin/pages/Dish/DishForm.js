@@ -1,8 +1,9 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
+import Select from "react-select/creatable";
 import { toast } from "react-toastify";
 import {
     INSERT_DISH,
@@ -20,6 +21,7 @@ import {
     GET_FOODS,
 } from "../../../utils/apollo/entities/food/operations/food.queries";
 import { GET_MEALS } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
+import { INSERT_RESTAURANT } from "../../../utils/apollo/entities/restaurant/restaurant.mutations";
 import { GET_RESTAURANTS } from "../../../utils/apollo/entities/restaurant/restaurant.queries";
 import { uploadCloudStorage } from "../../../utils/firebase";
 import AdminHeader2 from "../../components/AdminHeader2";
@@ -28,6 +30,7 @@ function DishForm() {
     const { id } = useParams();
     const history = useHistory();
     const {
+        control,
         register,
         handleSubmit,
         setValue,
@@ -47,8 +50,17 @@ function DishForm() {
 
     const [insertDish] = useMutation(INSERT_DISH);
     const [updateDish] = useMutation(UPDATE_DISH);
+    const [insertFood] = useMutation(INSERT_FOOD, {
+        refetchQueries: [GET_FOODS],
+    });
+    const [insertRestaurant] = useMutation(INSERT_RESTAURANT, {
+        refetchQueries: [GET_RESTAURANTS],
+    });
 
     const [previewImg, setPreviewImg] = useState(null);
+    const [loadingCreateFood, setLoadingCreateFood] = useState(false);
+    const [loadingCreateRestaurant, setLoadingCreateRestaurant] =
+        useState(false);
 
     const submitHandler = async (values) => {
         const { name, price, food, restaurant, description, image } = values;
@@ -66,8 +78,8 @@ function DishForm() {
                     id,
                     name,
                     price,
-                    food_id: parseInt(food),
-                    restaurant_id: parseInt(restaurant),
+                    food_id: parseInt(food.value),
+                    restaurant_id: parseInt(restaurant.value),
                     description,
                     img: imgUrl,
                 },
@@ -88,8 +100,8 @@ function DishForm() {
                 variables: {
                     name,
                     price,
-                    food_id: parseInt(food),
-                    restaurant_id: parseInt(restaurant),
+                    food_id: parseInt(food.value),
+                    restaurant_id: parseInt(restaurant.value),
                     description,
                     img: imgUrl,
                 },
@@ -125,16 +137,22 @@ function DishForm() {
     }, [formImg]);
 
     useEffect(() => {
-        if (id && detailDishState.data) {
-            const { name, description, price, food_id, restaurent_id, img } =
+        if (id && detailDishState.data && detailDishState.data.dish_by_pk) {
+            const { name, description, price, food, restaurant, img } =
                 detailDishState.data.dish_by_pk;
 
             setPreviewImg(img);
             setValue("name", name);
             setValue("description", description);
             setValue("price", price);
-            setValue("food", food_id);
-            setValue("restaurent", restaurent_id);
+            setValue("food", {
+                value: food.id,
+                label: food.name,
+            });
+            setValue("restaurant", {
+                value: restaurant.id,
+                label: restaurant.name,
+            });
         }
     }, [detailDishState]);
 
@@ -143,7 +161,7 @@ function DishForm() {
             <AdminHeader2
                 title={
                     id
-                        ? _.get(detailDishState, "data.food_by_pk.name") ||
+                        ? _.get(detailDishState, "data.dish_by_pk.name") ||
                           "Loading..."
                         : "Tạo món"
                 }
@@ -212,20 +230,55 @@ function DishForm() {
                                 >
                                     Loại món
                                 </label>
-                                <select
-                                    className="form-control"
-                                    id="food"
-                                    {...register("food", {
+                                <Controller
+                                    control={control}
+                                    name="food"
+                                    rules={{
                                         required: true,
-                                    })}
-                                >
-                                    {foods.map((food) => (
-                                        <option key={food.id} value={food.id}>
-                                            {food.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.name && (
+                                    }}
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => {
+                                        return (
+                                            <Select
+                                                options={foods.map((food) => ({
+                                                    value: food.id,
+                                                    label: food.name,
+                                                }))}
+                                                isLoading={loadingCreateFood}
+                                                onCreateOption={(foodName) => {
+                                                    setLoadingCreateFood(true);
+                                                    return insertFood({
+                                                        variables: {
+                                                            name: foodName,
+                                                            description: null,
+                                                            img: null,
+                                                        },
+                                                    })
+                                                        .then((res) => {
+                                                            const idFood =
+                                                                res.data
+                                                                    .insert_food
+                                                                    .returning[0]
+                                                                    .id;
+                                                            onChange({
+                                                                value: idFood,
+                                                                label: foodName,
+                                                            });
+                                                        })
+                                                        .finally(() =>
+                                                            setLoadingCreateFood(
+                                                                false
+                                                            )
+                                                        );
+                                                }}
+                                                onChange={onChange}
+                                                value={value}
+                                            />
+                                        );
+                                    }}
+                                />
+                                {errors.food && (
                                     <div className="invalid-feedback d-block">
                                         Không được để trống
                                     </div>
@@ -238,22 +291,64 @@ function DishForm() {
                                 >
                                     Nhà hàng
                                 </label>
-                                <select
-                                    className="form-control"
-                                    id="restaurant"
-                                    {...register("restaurant", {
+                                <Controller
+                                    control={control}
+                                    name="restaurant"
+                                    rules={{
                                         required: true,
-                                    })}
-                                >
-                                    {restaurants.map((restaurant) => (
-                                        <option
-                                            key={restaurant.id}
-                                            value={restaurant.id}
-                                        >
-                                            {restaurant.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    }}
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => {
+                                        return (
+                                            <Select
+                                                options={restaurants.map(
+                                                    (restaurant) => ({
+                                                        value: restaurant.id,
+                                                        label: restaurant.name,
+                                                    })
+                                                )}
+                                                isLoading={
+                                                    loadingCreateRestaurant
+                                                }
+                                                onCreateOption={(
+                                                    restaurantName
+                                                ) => {
+                                                    setLoadingCreateRestaurant(
+                                                        true
+                                                    );
+                                                    return insertRestaurant({
+                                                        variables: {
+                                                            name: restaurantName,
+                                                            address: null,
+                                                            open: null,
+                                                            close: null,
+                                                            img: null,
+                                                        },
+                                                    })
+                                                        .then((res) => {
+                                                            const idRestaurant =
+                                                                res.data
+                                                                    .insert_restaurant
+                                                                    .returning[0]
+                                                                    .id;
+                                                            onChange({
+                                                                value: idRestaurant,
+                                                                label: restaurantName,
+                                                            });
+                                                        })
+                                                        .finally(() =>
+                                                            setLoadingCreateRestaurant(
+                                                                false
+                                                            )
+                                                        );
+                                                }}
+                                                onChange={onChange}
+                                                value={value}
+                                            />
+                                        );
+                                    }}
+                                />
                                 {errors.restaurant && (
                                     <div className="invalid-feedback d-block">
                                         Không được để trống

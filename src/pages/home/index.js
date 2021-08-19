@@ -14,7 +14,7 @@ import PickMeal from "./pages/PickMeal";
 import Random from "./pages/Random";
 
 function Home() {
-    useTitle("Ăn gì hôm nay");
+    useTitle("Hôm nay ăn gì");
 
     return (
         <MainLayout>

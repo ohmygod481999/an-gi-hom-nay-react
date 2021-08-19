@@ -9,13 +9,13 @@ function ActionFooter({ isHomePage }) {
             <div className="row">
                 <div
                     className={`col ${
-                        location.pathname === "/" ? "selected" : ""
+                        location.pathname.includes("/home") ? "selected" : ""
                     }`}
                 >
                     <Link
                         to="/"
                         className={`${
-                            location.pathname === "/"
+                            location.pathname.includes("/home")
                                 ? "text-danger"
                                 : "text-dark"
                         } small font-weight-bold text-decoration-none`}
@@ -23,7 +23,7 @@ function ActionFooter({ isHomePage }) {
                         <p className="h4 m-0">
                             <i
                                 className={`feather-home ${
-                                    location.pathname === "/"
+                                    location.pathname.includes("/home")
                                         ? "text-danger"
                                         : "text-dark"
                                 }`}

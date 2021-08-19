@@ -42,6 +42,9 @@ export const INSERT_RESTAURANT = gql`
             }
         ) {
             affected_rows
+            returning {
+                id
+            }
         }
     }
 `;
