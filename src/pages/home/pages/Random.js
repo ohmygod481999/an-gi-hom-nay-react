@@ -83,18 +83,32 @@ function Random() {
                 <i className="feather-chevron-left" /> Back
             </div>
             <div className="">
-                {randomDish && (
+                {randomDish ? (
                     <div
-                        className="px-4 pt-3 pb-3"
+                        className="mx-4 mt-3 mb-3"
                         style={{
                             position: "relative",
                         }}
                     >
                         <div
                             style={{
+                                display: loading ? "block" : "none",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                zIndex: 1,
+                                cursor: "progress",
+                                top: 0,
+                                left: 0,
+                                backgroundColor: "black",
+                                opacity: 0.5,
+                            }}
+                        ></div>
+                        <div
+                            style={{
                                 position: "absolute",
                                 display: loading ? "block" : "none",
-                                zIndex: 1,
+                                zIndex: 2,
                                 left: "45%",
                                 top: "30%",
                             }}
@@ -177,6 +191,62 @@ function Random() {
                                         </Link>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div
+                        className="mx-4 mt-3 mb-3"
+                        style={{
+                            position: "relative",
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: loading ? "block" : "none",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                zIndex: 1,
+                                cursor: "progress",
+                                top: 0,
+                                left: 0,
+                                backgroundColor: "black",
+                                opacity: 0.5,
+                            }}
+                        ></div>
+                        <div
+                            style={{
+                                position: "absolute",
+                                display: loading ? "block" : "none",
+                                zIndex: 1,
+                                left: "45%",
+                                top: "30%",
+                            }}
+                        >
+                            <div
+                                class="spinner-grow text-primary"
+                                role="status"
+                            >
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        <div className="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
+                            <div className="list-card-image">
+                                <div className="favourite-heart text-danger position-absolute"></div>
+                                <div className="member-plan position-absolute">
+                                    <span className="badge badge-dark">
+                                        {/* {utils.formatMoney(randomDish.price)} */}
+                                    </span>
+                                </div>
+                                <a>
+                                    <img
+                                        // src={randomDish.img}
+                                        src="img/trending1.png"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlHnqr6vzNdx729B7ueeUSSJzntp4s5ocxKw&usqp=CAU"
+                                        className="img-fluid item-img w-100"
+                                    />
+                                </a>
                             </div>
                         </div>
                     </div>
