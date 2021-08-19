@@ -21,13 +21,13 @@ function PickMeal() {
             </div>
             <div className="px-3 pt-3">
                 <p className="text-muted">Bạn đang muốn dúng bữa nào</p>
-                <div class="list-group">
+                <div className="list-group">
                     {meals.map((meal) => (
                         <Link to={"/home/random/" + meal.id}>
                             <button
                                 key={meal.id}
                                 type="button"
-                                class="list-group-item list-group-item-action"
+                                className="list-group-item list-group-item-action"
                             >
                                 {meal.name}
                             </button>

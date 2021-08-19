@@ -22,19 +22,9 @@ function MainNav() {
                                 </Link>
                             </li>
                             <li>
-                                <a href="#">Quản lý nhà hàng</a>
-                                <ul>
-                                    <li>
-                                        <Link to="/admin/restaurant/list">
-                                            Danh sách nhà hàng
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/admin/restaurant/create">
-                                            Tạo mới nhà hàng
-                                        </Link>
-                                    </li>
-                                </ul>
+                                <Link to="/admin/restaurant/list">
+                                    Quản lý nhà hàng
+                                </Link>
                             </li>
                             <li>
                                 <Link to="/admin/food/list">

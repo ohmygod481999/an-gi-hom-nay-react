@@ -21,6 +21,7 @@ import NotFound from "./pages/not-found";
 import { useThirdPartyScript } from "./utils/hooks/useThirdPartyScript";
 import { thirdPartyScripts } from "./configs";
 import { useAuth } from "./utils/hooks/useAuth";
+import { useLocation } from "./utils/hooks/useLocation";
 import { useQuery } from "@apollo/client";
 import { GET_AUTH } from "./utils/apollo/entities/auth/operations/auth.queries";
 import { useEffect, useState } from "react";
@@ -28,11 +29,13 @@ import AdminRoute from "./utils/components/AdminRoute";
 import AdminPage from "./admin";
 import Unauthorize from "./pages/unauthorize";
 import Favorites from "./pages/favorites";
+import Location from "./pages/location";
 
 function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
     useThirdPartyScript(thirdPartyScripts, enableLoadScript);
     useAuth();
+    useLocation()
 
     const { data } = useQuery(GET_AUTH);
     const { auth } = data;
@@ -53,6 +56,9 @@ function App() {
                     </Route>
                     <Route path="/landing">
                         <Landing />
+                    </Route>
+                    <Route path="/location">
+                        <Location />
                     </Route>
                     <Route exact path="/">
                         <Redirect to="/home" />

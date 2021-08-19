@@ -118,10 +118,10 @@ function Random() {
                             }}
                         >
                             <div
-                                class="spinner-grow text-primary"
+                                className="spinner-grow text-primary"
                                 role="status"
                             >
-                                <span class="sr-only">Loading...</span>
+                                <span className="sr-only">Loading...</span>
                             </div>
                         </div>
                         <div className="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
@@ -232,10 +232,10 @@ function Random() {
                             }}
                         >
                             <div
-                                class="spinner-grow text-primary"
+                                className="spinner-grow text-primary"
                                 role="status"
                             >
-                                <span class="sr-only">Loading...</span>
+                                <span className="sr-only">Loading...</span>
                             </div>
                         </div>
                         <div className="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
@@ -269,7 +269,7 @@ function Random() {
                 >
                     {loading && (
                         <span
-                            class="spinner-border spinner-border-sm"
+                            className="spinner-border spinner-border-sm"
                             role="status"
                             aria-hidden="true"
                         ></span>

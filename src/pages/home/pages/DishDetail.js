@@ -1,10 +1,12 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { utils } from "../../../utils";
 import { GET_DETAIL_DISH } from "../../../utils/apollo/entities/dish/operations/dish.queries";
 import { useTitle } from "../../../utils/hooks/useTitle";
+import { Loader } from "@googlemaps/js-api-loader";
+import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 
 function DishDetail() {
     const { dishId } = useParams();
@@ -15,6 +17,7 @@ function DishDetail() {
             id: dishId,
         },
     });
+    const locationData = useQuery(GET_LOCATION);
 
     const dish = (data && data.dish_by_pk) || {};
     useTitle(dish.name || "loading..");
@@ -53,6 +56,29 @@ function DishDetail() {
         }
     }, [data]);
 
+    useEffect(() => {
+        if (locationData.data) {
+            const { lat, lng } = locationData.data.location;
+            const loader = new Loader({
+                apiKey: process.env.REACT_APP_GOOGLE_MAP,
+                version: "weekly",
+            });
+            loader.load().then(() => {
+                const map = new window.google.maps.Map(
+                    document.getElementById("map"),
+                    {
+                        center: { lat: lat, lng: lng },
+                        zoom: 15,
+                    }
+                );
+                const marker = new window.google.maps.Marker({
+                    position: { lat: lat, lng: lng },
+                    map: map,
+                });
+            });
+        }
+    }, [locationData]);
+
     return (
         <div>
             <div className="osahan-restaurant-detail">
@@ -75,18 +101,22 @@ function DishDetail() {
                         alt="Responsive image"
                     />
                 </div>
-                <div class="pt-3 px-3">
+                <div className="pt-3 px-3">
                     <p className="font-weight-bold mb-1">
                         Bạn đã chọn món, chúc ngon miệng
                     </p>
-                    <h2 class="font-weight-bold">
+                    <h2 className="font-weight-bold">
                         {dish.name || "loading..."}
                     </h2>
-                    <p class="text-muted">{dish.description || "loading..."}</p>
+                    <p className="text-muted">
+                        {dish.description || "loading..."}
+                    </p>
                 </div>
-                <hr style={{
-                    marginBottom: 0
-                }}/>
+                <hr
+                    style={{
+                        marginBottom: 0,
+                    }}
+                />
                 <div className="p-3">
                     <div className="pt-3">
                         <p className="font-weight-bold mb-1">Về quán</p>
@@ -134,14 +164,21 @@ function DishDetail() {
 
                 <div className="mapouter">
                     <div className="gmap_canvas">
-                        <iframe
+                        <div
+                            id="map"
+                            style={{
+                                width: "100%",
+                                height: "200px",
+                            }}
+                        ></div>
+                        {/* <iframe
                             src="https://maps.google.com/maps?q=dugri%20ludhiana&t=&z=13&ie=UTF8&iwloc=&output=embed"
                             frameBorder={0}
                             scrolling="no"
                             marginHeight={0}
                             marginWidth={0}
                             width="100%"
-                        />
+                        /> */}
                     </div>
                 </div>
                 <div className="bg-primary p-3">
@@ -191,7 +228,7 @@ function DishDetail() {
             >
                 <div className="row">
                     {(_.get(dish, "restaurant.dishes") || []).map((dish) => (
-                        <div className="col-12">
+                        <div key={dish.id} className="col-12">
                             <div className="d-flex align-items-center list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
                                 <div className="list-card-image">
                                     <div className="star position-absolute">

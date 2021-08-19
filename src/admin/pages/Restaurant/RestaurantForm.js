@@ -130,8 +130,8 @@ function RestaurantForm() {
             setPreviewImg(img);
             setValue("name", name);
             setValue("address", address);
-            setValue("openHour", utils.timetzToTimeString(open))
-            setValue("closeHour", utils.timetzToTimeString(close))
+            if (open) setValue("openHour", utils.timetzToTimeString(open));
+            if (close) setValue("closeHour", utils.timetzToTimeString(close));
         }
     }, [detailRestaurantState]);
 
@@ -140,8 +140,10 @@ function RestaurantForm() {
             <AdminHeader2
                 title={
                     id
-                        ? _.get(detailRestaurantState, "data.restaurant_by_pk.name") ||
-                          "Loading..."
+                        ? _.get(
+                              detailRestaurantState,
+                              "data.restaurant_by_pk.name"
+                          ) || "Loading..."
                         : "Tạo nhà hàng"
                 }
             />

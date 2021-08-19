@@ -1,5 +1,6 @@
 import { InMemoryCache } from "@apollo/client";
 import { authVar } from "./entities/auth";
+import { locationVar } from "./entities/location";
 
 export const cache = new InMemoryCache({
     typePolicies: {
@@ -8,6 +9,11 @@ export const cache = new InMemoryCache({
                 auth: {
                     read() {
                         return authVar();
+                    },
+                },
+                location: {
+                    read() {
+                        return locationVar();
                     },
                 },
             },
