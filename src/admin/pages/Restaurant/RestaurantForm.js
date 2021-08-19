@@ -1,4 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { Loader } from "@googlemaps/js-api-loader";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -15,6 +16,7 @@ import {
     UPDATE_MEALFOOD,
 } from "../../../utils/apollo/entities/food/operations/food.mutaions";
 import { GET_DETAIL_FOOD } from "../../../utils/apollo/entities/food/operations/food.queries";
+import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 import { GET_MEALS } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
 import {
     INSERT_RESTAURANT,
@@ -22,10 +24,12 @@ import {
 } from "../../../utils/apollo/entities/restaurant/restaurant.mutations";
 import { GET_DETAIL_RESTAURANT } from "../../../utils/apollo/entities/restaurant/restaurant.queries";
 import { uploadCloudStorage } from "../../../utils/firebase";
+import { useLocation } from "../../../utils/hooks/useLocation";
 import AdminHeader2 from "../../components/AdminHeader2";
 
 function RestaurantForm() {
     const { id } = useParams();
+    useLocation();
     const history = useHistory();
     const {
         control,
@@ -35,6 +39,9 @@ function RestaurantForm() {
         watch,
         formState: { errors },
     } = useForm();
+    const [restaurantLat, setRestaurantLat] = useState(null);
+    const [restaurantLng, setRestaurantLng] = useState(null);
+
     const formImg = watch("image");
 
     const { data } = useQuery(GET_MEALS);
@@ -47,6 +54,8 @@ function RestaurantForm() {
 
     const [insertRestaurant] = useMutation(INSERT_RESTAURANT);
     const [updateRestaurant] = useMutation(UPDATE_RESTAURANT);
+
+    const locationData = useQuery(GET_LOCATION);
 
     const [previewImg, setPreviewImg] = useState(null);
 
@@ -69,6 +78,10 @@ function RestaurantForm() {
                     open: utils.formatToISOTime(openHour),
                     close: utils.formatToISOTime(closeHour),
                     img: imgUrl,
+                    latlng:
+                        restaurantLat && restaurantLng
+                            ? `(${restaurantLat},${restaurantLng})`
+                            : null,
                 },
             })
                 .then((res) => toast["success"]("Thành công"))
@@ -90,6 +103,10 @@ function RestaurantForm() {
                     open: utils.formatToISOTime(openHour),
                     close: utils.formatToISOTime(closeHour),
                     img: imgUrl,
+                    latlng:
+                        restaurantLat && restaurantLng
+                            ? `(${restaurantLat},${restaurantLng})`
+                            : null,
                 },
             })
                 .then((res) => toast["success"]("Thành công"))
@@ -132,8 +149,54 @@ function RestaurantForm() {
             setValue("address", address);
             if (open) setValue("openHour", utils.timetzToTimeString(open));
             if (close) setValue("closeHour", utils.timetzToTimeString(close));
+            if (latlng) {
+                const { lat, lng } = utils.getLatLngFromString(latlng);
+                setRestaurantLat(lat);
+                setRestaurantLng(lng);
+            }
         }
     }, [detailRestaurantState]);
+
+    useEffect(() => {
+        const loader = new Loader({
+            apiKey: process.env.REACT_APP_GOOGLE_MAP,
+            version: "weekly",
+            libraries: ["places"],
+        });
+        loader.load().then(() => {
+            const input = document.getElementById("address");
+            const options = {
+                componentRestrictions: { country: "vn" },
+                fields: ["address_components", "geometry", "icon", "name"],
+                strictBounds: false,
+                types: ["establishment"],
+            };
+            if (locationData.data && locationData.data.location) {
+                const { lat, lng } = locationData.data.location;
+                const center = { lat, lng };
+                // Create a bounding box with sides ~10km away from the center point
+                const defaultBounds = {
+                    north: center.lat + 0.1,
+                    south: center.lat - 0.1,
+                    east: center.lng + 0.1,
+                    west: center.lng - 0.1,
+                };
+                options["bounds"] = defaultBounds;
+            }
+            const autocomplete = new window.google.maps.places.Autocomplete(
+                input,
+                options
+            );
+
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+                setRestaurantLat(lat);
+                setRestaurantLng(lng);
+            });
+        });
+    }, [locationData]);
 
     return (
         <div className="">
@@ -217,12 +280,12 @@ function RestaurantForm() {
                                 >
                                     Địa chỉ quán
                                 </label>
-                                <textarea
+                                <input
                                     className="form-control"
                                     id="address"
                                     placeholder="VD: 17 ngõ 622 Minh Khai"
                                     {...register("address")}
-                                ></textarea>
+                                />
                             </div>
                             <div className="form-group">
                                 <label

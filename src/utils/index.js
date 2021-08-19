@@ -17,8 +17,17 @@ export const utils = {
         );
         function pad(num) {
             if (num < 10) return `0${num}`;
-            return num
+            return num;
         }
         return `${pad(iso.getHours())}:${pad(iso.getMinutes())}`;
+    },
+    getLatLngFromString: (latlngString) => {
+        const [lat, lng] = latlngString
+            .substring(1, latlngString.length - 1)
+            .split(",");
+        return {
+            lat: parseFloat(lat),
+            lng: parseFloat(lng),
+        };
     },
 };

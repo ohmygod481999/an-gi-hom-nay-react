@@ -40,7 +40,7 @@ function MainNav() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/my-dish">
+                    <Link to="/favorites">
                         <i className="feather-map-pin mr-2" /> Món của tôi
                     </Link>
                 </li>

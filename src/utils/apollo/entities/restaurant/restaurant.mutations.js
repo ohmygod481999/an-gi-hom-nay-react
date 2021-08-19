@@ -8,6 +8,7 @@ export const UPDATE_RESTAURANT = gql`
         $img: String
         $open: timetz
         $close: timetz
+        $latlng: point
     ) {
         update_restaurant(
             where: { id: { _eq: $id } }
@@ -17,6 +18,7 @@ export const UPDATE_RESTAURANT = gql`
                 open: $open
                 close: $close
                 img: $img
+                latlng: $latlng
             }
         ) {
             affected_rows
@@ -31,6 +33,7 @@ export const INSERT_RESTAURANT = gql`
         $img: String
         $open: timetz
         $close: timetz
+        $latlng: point
     ) {
         insert_restaurant(
             objects: {
@@ -39,6 +42,7 @@ export const INSERT_RESTAURANT = gql`
                 open: $open
                 close: $close
                 img: $img
+                latlng: $latlng
             }
         ) {
             affected_rows
