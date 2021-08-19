@@ -35,8 +35,7 @@ function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
     useThirdPartyScript(thirdPartyScripts, enableLoadScript);
     useAuth();
-    useLocation()
-
+    
     const { data } = useQuery(GET_AUTH);
     const { auth } = data;
 

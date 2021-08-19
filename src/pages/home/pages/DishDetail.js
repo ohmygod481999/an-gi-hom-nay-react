@@ -7,10 +7,12 @@ import { GET_DETAIL_DISH } from "../../../utils/apollo/entities/dish/operations/
 import { useTitle } from "../../../utils/hooks/useTitle";
 import { Loader } from "@googlemaps/js-api-loader";
 import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
+import { useLocation } from "../../../utils/hooks/useLocation";
 
 function DishDetail() {
     const { dishId } = useParams();
     const history = useHistory();
+    useLocation()
 
     const { data } = useQuery(GET_DETAIL_DISH, {
         variables: {
@@ -57,7 +59,7 @@ function DishDetail() {
     }, [data]);
 
     useEffect(() => {
-        if (locationData.data) {
+        if (locationData.data && locationData.data.location) {
             const { lat, lng } = locationData.data.location;
             const loader = new Loader({
                 apiKey: process.env.REACT_APP_GOOGLE_MAP,

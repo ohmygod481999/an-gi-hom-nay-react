@@ -14,11 +14,11 @@ function Location() {
                     position.coords.latitude,
                     position.coords.longitude
                 );
-                history.push("/home");
             });
         } else {
             alert("Geolocation is not supported by this browser.");
         }
+        history.push("/home");
     };
     return (
         <div className="vh-100 location location-page">
