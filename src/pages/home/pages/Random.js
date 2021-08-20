@@ -127,7 +127,7 @@ function Random() {
                 setPicking(false);
             });
     };
-
+    
     return (
         <div
             style={{
@@ -405,7 +405,7 @@ function Random() {
                             aria-hidden="true"
                         ></span>
                     )}{" "}
-                    Chọn ngãu nhiên
+                    Gợi ý tôi
                 </button>
             </div>
         </div>
