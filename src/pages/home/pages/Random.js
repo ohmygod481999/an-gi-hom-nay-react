@@ -1,15 +1,21 @@
 import { useQuery } from "@apollo/client";
+import _ from "lodash";
 import React, { useMemo, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import ModalFilter from "../../../layout/ModalFilter";
 import { utils } from "../../../utils";
+import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 import { GET_MEAL } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
+import { useLocation } from "../../../utils/hooks/useLocation";
 
 function Random() {
     const { id } = useParams();
+    useLocation();
     const history = useHistory();
     const [randomDish, setRandomDish] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const locationData = useQuery(GET_LOCATION);
 
     const { data } = useQuery(GET_MEAL, {
         variables: {
@@ -31,7 +37,7 @@ function Random() {
         return dishes;
     }, [data]);
 
-    const getRandomDish = () => {
+    const getRandomDish = async () => {
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
@@ -40,12 +46,33 @@ function Random() {
 
         if (dishes.length > 0) {
             setLoading(true);
-            setTimeout(() => {
-                const randomIndex = getRandomInt(0, dishes.length - 1);
-                setRandomDish(dishes[randomIndex]);
-                console.log(dishes[randomIndex]);
-                setLoading(false);
-            }, 1500);
+            const randomIndex = getRandomInt(0, dishes.length - 1);
+            let dish = {
+                ...dishes[randomIndex],
+            };
+            let duration, distance;
+            if (
+                _.get(locationData, "data.location.scriptLoaded") &&
+                _.get(locationData, "data.location.latlng") &&
+                dishes[randomIndex].restaurant.latlng
+            ) {
+                const curLatLng = _.get(locationData, "data.location.latlng");
+                const restaurantLatLng = utils.getLatLngFromString(
+                    dishes[randomIndex].restaurant.latlng
+                );
+                const res = await utils.getDistanceAndDurationMap(
+                    curLatLng.lat,
+                    curLatLng.lng,
+                    restaurantLatLng.lat,
+                    restaurantLatLng.lng
+                );
+                distance = res.distance;
+                duration = res.duration;
+            }
+            dish["duration"] = duration ? duration.text : "N/A";
+            dish["distance"] = distance ? distance.text : "N/A";
+            setRandomDish(dish);
+            setLoading(false);
         }
     };
 
@@ -169,7 +196,11 @@ function Random() {
                                     <p className="text-gray mb-3 time">
                                         <span className="bg-light text-dark rounded-sm pl-2 pb-1 pt-1 pr-2">
                                             <i className="feather-clock" />{" "}
-                                            15–30 min
+                                            {randomDish.duration}
+                                        </span>{" "}
+                                        <span className="bg-light text-dark rounded-sm pl-2 pb-1 pt-1 pr-2">
+                                            <i className="feather-send" />{" "}
+                                            {randomDish.distance}
                                         </span>{" "}
                                         <span className="float-right text-black-100">
                                             {" "}

@@ -192,9 +192,12 @@ function RestaurantForm() {
     useEffect(() => {
         if (
             _.get(locationData, "data.location.scriptLoaded") &&
+            _.get(locationData, "data.location.latlng") &&
             restaurantLatLng
         ) {
             const { lat, lng } = restaurantLatLng;
+            const currentLatLng = _.get(locationData, "data.location.latlng");
+
             const map = new window.google.maps.Map(
                 document.getElementById("map"),
                 {
@@ -208,17 +211,17 @@ function RestaurantForm() {
                 map: map,
             });
 
-            const geocoder = new window.google.maps.Geocoder();
-            geocoder
-                .geocode({
-                    location: { lat, lng },
-                })
-                .then((response) => {
-                    console.log(response);
-                    if (response.results[0]) {
-                        console.log(response.results[0]);
-                    }
-                });
+            // const geocoder = new window.google.maps.Geocoder();
+            // geocoder
+            //     .geocode({
+            //         location: { lat, lng },
+            //     })
+            //     .then((response) => {
+            //         console.log(response);
+            //         if (response.results[0]) {
+            //             console.log(response.results[0]);
+            //         }
+            //     });
         }
     }, [locationData, restaurantLatLng]);
 

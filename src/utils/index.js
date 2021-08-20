@@ -30,4 +30,35 @@ export const utils = {
             lng: parseFloat(lng),
         };
     },
+    getDistanceAndDurationMap: async (
+        originLat,
+        originLng,
+        destLat,
+        destLng
+    ) => {
+        return new Promise((res, rej) => {
+            var origin = new window.google.maps.LatLng(originLat, originLng);
+            var destination = new window.google.maps.LatLng(destLat, destLng);
+
+            var service = new window.google.maps.DistanceMatrixService();
+            service.getDistanceMatrix(
+                {
+                    origins: [origin],
+                    destinations: [destination],
+                    travelMode: "DRIVING",
+                },
+                callback
+            );
+
+            function callback(response, status) {
+                if (response.rows[0]) {
+                    console.log(response)
+                    res({
+                        distance: response.rows[0].elements[0].distance,
+                        duration: response.rows[0].elements[0].duration,
+                    });
+                } else rej();
+            }
+        });
+    },
 };

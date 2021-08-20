@@ -28,6 +28,7 @@ export const GET_MEAL = gql`
                             id
                             name
                             address
+                            latlng
                         }
                     }
                 }
