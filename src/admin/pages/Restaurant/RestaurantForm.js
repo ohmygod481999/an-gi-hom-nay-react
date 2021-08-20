@@ -39,8 +39,7 @@ function RestaurantForm() {
         watch,
         formState: { errors },
     } = useForm();
-    const [restaurantLat, setRestaurantLat] = useState(null);
-    const [restaurantLng, setRestaurantLng] = useState(null);
+    const [restaurantLatLng, setRestaurantLatLng] = useState(null);
 
     const formImg = watch("image");
 
@@ -78,10 +77,9 @@ function RestaurantForm() {
                     open: utils.formatToISOTime(openHour),
                     close: utils.formatToISOTime(closeHour),
                     img: imgUrl,
-                    latlng:
-                        restaurantLat && restaurantLng
-                            ? `(${restaurantLat},${restaurantLng})`
-                            : null,
+                    latlng: restaurantLatLng
+                        ? `(${restaurantLatLng.lat},${restaurantLatLng.lng})`
+                        : null,
                 },
             })
                 .then((res) => toast["success"]("Thành công"))
@@ -103,10 +101,9 @@ function RestaurantForm() {
                     open: utils.formatToISOTime(openHour),
                     close: utils.formatToISOTime(closeHour),
                     img: imgUrl,
-                    latlng:
-                        restaurantLat && restaurantLng
-                            ? `(${restaurantLat},${restaurantLng})`
-                            : null,
+                    latlng: restaurantLatLng
+                        ? `(${restaurantLatLng.lat},${restaurantLatLng.lng})`
+                        : null,
                 },
             })
                 .then((res) => toast["success"]("Thành công"))
@@ -151,19 +148,13 @@ function RestaurantForm() {
             if (close) setValue("closeHour", utils.timetzToTimeString(close));
             if (latlng) {
                 const { lat, lng } = utils.getLatLngFromString(latlng);
-                setRestaurantLat(lat);
-                setRestaurantLng(lng);
+                setRestaurantLatLng({ lat, lng });
             }
         }
     }, [detailRestaurantState]);
 
     useEffect(() => {
-        const loader = new Loader({
-            apiKey: process.env.REACT_APP_GOOGLE_MAP,
-            version: "weekly",
-            libraries: ["places"],
-        });
-        loader.load().then(() => {
+        if (_.get(locationData, "data.location.scriptLoaded")) {
             const input = document.getElementById("address");
             const options = {
                 componentRestrictions: { country: "vn" },
@@ -192,11 +183,44 @@ function RestaurantForm() {
                 const place = autocomplete.getPlace();
                 const lat = place.geometry.location.lat();
                 const lng = place.geometry.location.lng();
-                setRestaurantLat(lat);
-                setRestaurantLng(lng);
+
+                setRestaurantLatLng({ lat, lng });
             });
-        });
+        }
     }, [locationData]);
+
+    useEffect(() => {
+        if (
+            _.get(locationData, "data.location.scriptLoaded") &&
+            restaurantLatLng
+        ) {
+            const { lat, lng } = restaurantLatLng;
+            const map = new window.google.maps.Map(
+                document.getElementById("map"),
+                {
+                    center: { lat: lat, lng: lng },
+                    zoom: 15,
+                }
+            );
+
+            const marker = new window.google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: map,
+            });
+
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder
+                .geocode({
+                    location: { lat, lng },
+                })
+                .then((response) => {
+                    console.log(response);
+                    if (response.results[0]) {
+                        console.log(response.results[0]);
+                    }
+                });
+        }
+    }, [locationData, restaurantLatLng]);
 
     return (
         <div className="">
@@ -287,6 +311,18 @@ function RestaurantForm() {
                                     {...register("address")}
                                 />
                             </div>
+                            <div className="mapouter mb-3">
+                                <div className="gmap_canvas">
+                                    <div
+                                        id="map"
+                                        style={{
+                                            width: "100%",
+                                            height: "200px",
+                                        }}
+                                    ></div>
+                                </div>
+                            </div>
+
                             <div className="form-group">
                                 <label
                                     htmlFor="openHour"

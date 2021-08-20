@@ -12,7 +12,6 @@ import { useLocation } from "../../../utils/hooks/useLocation";
 function DishDetail() {
     const { dishId } = useParams();
     const history = useHistory();
-    useLocation()
 
     const { data } = useQuery(GET_DETAIL_DISH, {
         variables: {
@@ -59,27 +58,28 @@ function DishDetail() {
     }, [data]);
 
     useEffect(() => {
-        if (locationData.data && locationData.data.location) {
-            const { lat, lng } = locationData.data.location;
-            const loader = new Loader({
-                apiKey: process.env.REACT_APP_GOOGLE_MAP,
-                version: "weekly",
-            });
-            loader.load().then(() => {
-                const map = new window.google.maps.Map(
-                    document.getElementById("map"),
-                    {
-                        center: { lat: lat, lng: lng },
-                        zoom: 15,
-                    }
-                );
-                const marker = new window.google.maps.Marker({
-                    position: { lat: lat, lng: lng },
-                    map: map,
-                });
+        if (
+            _.get(locationData, "data.location.scriptLoaded") &&
+            _.get(data, "dish_by_pk.restaurant.latlng")
+        ) {
+            const { lat, lng } = utils.getLatLngFromString(
+                _.get(data, "dish_by_pk.restaurant.latlng")
+            );
+
+            const map = new window.google.maps.Map(
+                document.getElementById("map"),
+                {
+                    center: { lat: lat, lng: lng },
+                    zoom: 15,
+                }
+            );
+            const marker = new window.google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: map,
+                title: _.get(data, "dish_by_pk.restaurant.name"),
             });
         }
-    }, [locationData]);
+    }, [locationData, data]);
 
     return (
         <div>
@@ -149,7 +149,11 @@ function DishDetail() {
                             <div className="col-6">
                                 <p className="font-weight-bold m-0">Open</p>
                                 <p className="text-muted m-0">
-                                    {_.get(dish, "restaurant.open") || "N/A"}
+                                    {_.get(dish, "restaurant.open")
+                                        ? utils.timetzToTimeString(
+                                              _.get(dish, "restaurant.open")
+                                          )
+                                        : "N/A"}
                                 </p>
                             </div>
                             <div className="col-6">
@@ -157,7 +161,11 @@ function DishDetail() {
                                     Close time
                                 </p>
                                 <p className="text-muted m-0">
-                                    {_.get(dish, "restaurant.close") || "N/A"}
+                                    {_.get(dish, "restaurant.open")
+                                        ? utils.timetzToTimeString(
+                                              _.get(dish, "restaurant.close")
+                                          )
+                                        : "N/A"}
                                 </p>
                             </div>
                         </div>
@@ -173,14 +181,6 @@ function DishDetail() {
                                 height: "200px",
                             }}
                         ></div>
-                        {/* <iframe
-                            src="https://maps.google.com/maps?q=dugri%20ludhiana&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                            frameBorder={0}
-                            scrolling="no"
-                            marginHeight={0}
-                            marginWidth={0}
-                            width="100%"
-                        /> */}
                     </div>
                 </div>
                 <div className="bg-primary p-3">

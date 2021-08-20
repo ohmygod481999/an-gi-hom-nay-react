@@ -1,5 +1,8 @@
 import { makeVar } from "@apollo/client";
 
-const locationInitialValue = null;
+const locationInitialValue = {
+    latlng: null,
+    scriptLoaded: false
+};
 
 export const locationVar = makeVar(locationInitialValue);
