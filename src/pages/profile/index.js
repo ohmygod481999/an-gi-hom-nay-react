@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import MainLayout from "../../layout/MainLayout";
 import { GET_AUTH } from "../../utils/apollo/entities/auth/operations/auth.queries";
 import { auth } from "../../utils/firebase";
 
 function Profile() {
     const { data } = useQuery(GET_AUTH);
-    console.log(data.auth.user)
+    console.log(data.auth.user);
     const { displayName, email, emailVerified, photoURL } = data.auth.user;
 
     const history = useHistory();
@@ -63,6 +63,26 @@ function Profile() {
                         </p>
                         <h5 className="m-0 ml-auto text-primary"></h5>
                     </div>
+                </div>
+                <div className="bg-white rounded shadow mt-3 profile-details">
+                    <Link
+                        to="/profile/history"
+                        className="d-flex w-100 align-items-center border-bottom p-3"
+                    >
+                        <div className="left mr-3">
+                            <h6 className="font-weight-bold mb-1 text-dark">
+                                Lịch sử ăn uống
+                            </h6>
+                            <p className="small text-muted m-0">
+                                Eating history
+                            </p>
+                        </div>
+                        <div className="right ml-auto">
+                            <h6 className="font-weight-bold m-0">
+                                <i className="feather-chevron-right" />
+                            </h6>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </MainLayout>

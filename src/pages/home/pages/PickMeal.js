@@ -14,7 +14,7 @@ function PickMeal() {
             }}
         >
             <div className="px-3 pt-3 title d-flex align-items-center">
-                <h5 className="m-0">Hôm nay ăn nhỉ gì?</h5>
+                <h5 className="m-0">Bạn không biết hôm nay ăn gì? Để mình gợi ý nhé!</h5>
                 <a className="font-weight-bold ml-auto" href="trending.html">
                     {/* View all <i className="feather-chevrons-right" /> */}
                 </a>

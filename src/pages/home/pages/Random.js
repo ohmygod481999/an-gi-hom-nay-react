@@ -10,6 +10,8 @@ import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations
 import { GET_MEAL } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
 import { INSERT_USER_DISH } from "../../../utils/apollo/entities/userdish/userdish.mutations";
 import { GET_USER_DISHES } from "../../../utils/apollo/entities/userdish/userdish.queries";
+import { INSERT_USER_HISTORY } from "../../../utils/apollo/entities/userhistory/userhistory.mutations";
+import { GET_USER_HISTORIES } from "../../../utils/apollo/entities/userhistory/userhistory.queries";
 import { useLocation } from "../../../utils/hooks/useLocation";
 
 function Random() {
@@ -18,6 +20,7 @@ function Random() {
     const history = useHistory();
     const [randomDish, setRandomDish] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [picking, setPicking] = useState(false);
 
     const locationData = useQuery(GET_LOCATION);
     const authState = useQuery(GET_AUTH);
@@ -39,6 +42,9 @@ function Random() {
 
     const [insertUserDish] = useMutation(INSERT_USER_DISH, {
         refetchQueries: [GET_USER_DISHES],
+    });
+    const [insertUserHistory] = useMutation(INSERT_USER_HISTORY, {
+        refetchQueries: [GET_USER_HISTORIES],
     });
 
     const meal = (data && data.meal_by_pk) || {};
@@ -103,6 +109,25 @@ function Random() {
         })
             .then((res) => toast["success"]("Đã thêm vào mục yêu thích"))
             .catch((e) => toast["error"]("Thất bại " + e));
+    };
+
+    const pickDishHandler = async (dishId) => {
+        setPicking(true);
+        insertUserHistory({
+            variables: {
+                dish_id: dishId,
+                user_id: userId,
+            },
+        })
+            .then((res) => {
+                history.push("/home/dish/" + dishId);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setPicking(false);
+            });
     };
 
     return (
@@ -280,13 +305,22 @@ function Random() {
                                         </div>
                                     </div>
                                     <div className="col-4 d-flex justify-content-end">
-                                        <Link
-                                            to={"/home/dish/" + randomDish.id}
+                                        <button
+                                            className="btn btn-primary"
+                                            disabled={picking}
+                                            onClick={() =>
+                                                pickDishHandler(randomDish.id)
+                                            }
                                         >
-                                            <button className="btn btn-primary">
-                                                CHỌN
-                                            </button>
-                                        </Link>
+                                            {picking && (
+                                                <span
+                                                    className="spinner-border spinner-border-sm"
+                                                    role="status"
+                                                    aria-hidden="true"
+                                                ></span>
+                                            )}{" "}
+                                            CHỌN
+                                        </button>
                                     </div>
                                 </div>
                             </div>

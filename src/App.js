@@ -30,6 +30,7 @@ import Unauthorize from "./pages/unauthorize";
 import Favorites from "./pages/favorites";
 import Location from "./pages/location";
 import { useGoogleMap } from "./utils/hooks/useGoogleMap";
+import UserHistory from "./pages/profile/pages/UserHistory";
 
 function App() {
     const [enableLoadScript, setEnableLoadScript] = useState(false);
@@ -72,8 +73,11 @@ function App() {
                     </Route>
                     {auth.isLoggedIn ? (
                         <Switch>
-                            <Route path="/profile">
+                            <Route exact path="/profile">
                                 <Profile />
+                            </Route>
+                            <Route path="/profile/history">
+                                <UserHistory />
                             </Route>
                             <Route path={"/maintence"}>
                                 <Maintence />
