@@ -1,11 +1,12 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import _ from "lodash";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import ModalFilter from "../../../layout/ModalFilter";
 import { utils } from "../../../utils";
 import { GET_AUTH } from "../../../utils/apollo/entities/auth/operations/auth.queries";
+import { GET_RANDOM_DISH } from "../../../utils/apollo/entities/dish/operations/dish.queries";
 import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 import { GET_MEAL } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
 import { INSERT_USER_DISH } from "../../../utils/apollo/entities/userdish/userdish.mutations";
@@ -18,7 +19,7 @@ function Random() {
     const { id } = useParams();
     useLocation();
     const history = useHistory();
-    const [randomDish, setRandomDish] = useState(null);
+    // const [randomDish, setRandomDish] = useState(null);
     const [loading, setLoading] = useState(false);
     const [picking, setPicking] = useState(false);
 
@@ -30,6 +31,10 @@ function Random() {
         variables: {
             id,
         },
+    });
+    const [randomDish, setRandomDish] = useState(null);
+    const [queryRandomDish, randomDishState] = useLazyQuery(GET_RANDOM_DISH, {
+        fetchPolicy: "network-only",
     });
 
     const queryUserDishes = useQuery(GET_USER_DISHES, {
@@ -48,57 +53,50 @@ function Random() {
     });
 
     const meal = (data && data.meal_by_pk) || {};
-    const dishes = useMemo(() => {
-        const dishes = [];
-        if (data) {
-            meal.mealfoods.forEach((mealfood) => {
-                const food = mealfood.food;
-                food.dishes.forEach((dish) => {
-                    dishes.push(dish);
-                });
-            });
-        }
-        return dishes;
-    }, [data]);
 
     const getRandomDish = async () => {
-        function getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        if (dishes.length > 0) {
-            setLoading(true);
-            const randomIndex = getRandomInt(0, dishes.length - 1);
-            let dish = {
-                ...dishes[randomIndex],
-            };
-            let duration, distance;
-            if (
-                _.get(locationData, "data.location.scriptLoaded") &&
-                _.get(locationData, "data.location.latlng") &&
-                dishes[randomIndex].restaurant.latlng
-            ) {
-                const curLatLng = _.get(locationData, "data.location.latlng");
-                const restaurantLatLng = utils.getLatLngFromString(
-                    dishes[randomIndex].restaurant.latlng
-                );
-                const res = await utils.getDistanceAndDurationMap(
-                    curLatLng.lat,
-                    curLatLng.lng,
-                    restaurantLatLng.lat,
-                    restaurantLatLng.lng
-                );
-                distance = res.distance;
-                duration = res.duration;
-            }
-            dish["duration"] = duration ? duration.text : "N/A";
-            dish["distance"] = distance ? distance.text : "N/A";
-            setRandomDish(dish);
-            setLoading(false);
-        }
+        queryRandomDish({
+            variables: {
+                mealId: meal.id,
+            },
+        });
     };
+
+    useEffect(() => {
+        const setRandomDishAsync = async () => {
+            if (randomDishState.data && randomDishState.data.randomDish) {
+                let dish = {
+                    ...randomDishState.data.randomDish,
+                };
+                let duration, distance;
+                if (
+                    _.get(locationData, "data.location.scriptLoaded") &&
+                    _.get(locationData, "data.location.latlng") &&
+                    dish.restaurant.latlng
+                ) {
+                    const curLatLng = _.get(
+                        locationData,
+                        "data.location.latlng"
+                    );
+                    const restaurantLatLng = utils.getLatLngFromString(
+                        dish.restaurant.latlng
+                    );
+                    const res = await utils.getDistanceAndDurationMap(
+                        curLatLng.lat,
+                        curLatLng.lng,
+                        restaurantLatLng.lat,
+                        restaurantLatLng.lng
+                    );
+                    distance = res.distance;
+                    duration = res.duration;
+                }
+                dish["duration"] = duration ? duration.text : "N/A";
+                dish["distance"] = distance ? distance.text : "N/A";
+                setRandomDish(dish);
+            }
+        };
+        setRandomDishAsync();
+    }, [randomDishState]);
 
     const handleLikeDish = async () => {
         insertUserDish({
@@ -177,7 +175,9 @@ function Random() {
                     >
                         <div
                             style={{
-                                display: loading ? "block" : "none",
+                                display: randomDishState.loading
+                                    ? "block"
+                                    : "none",
                                 position: "absolute",
                                 width: "100%",
                                 height: "100%",
@@ -192,7 +192,9 @@ function Random() {
                         <div
                             style={{
                                 position: "absolute",
-                                display: loading ? "block" : "none",
+                                display: randomDishState.loading
+                                    ? "block"
+                                    : "none",
                                 zIndex: 2,
                                 left: "45%",
                                 top: "30%",
@@ -335,7 +337,9 @@ function Random() {
                     >
                         <div
                             style={{
-                                display: loading ? "block" : "none",
+                                display: randomDishState.loading
+                                    ? "block"
+                                    : "none",
                                 position: "absolute",
                                 width: "100%",
                                 height: "100%",
@@ -350,7 +354,9 @@ function Random() {
                         <div
                             style={{
                                 position: "absolute",
-                                display: loading ? "block" : "none",
+                                display: randomDishState.loading
+                                    ? "block"
+                                    : "none",
                                 zIndex: 1,
                                 left: "45%",
                                 top: "30%",
@@ -390,9 +396,9 @@ function Random() {
                     onClick={() => {
                         getRandomDish();
                     }}
-                    disabled={loading}
+                    disabled={randomDishState.loading}
                 >
-                    {loading && (
+                    {randomDishState.loading && (
                         <span
                             className="spinner-border spinner-border-sm"
                             role="status"

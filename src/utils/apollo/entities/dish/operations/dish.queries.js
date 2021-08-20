@@ -57,3 +57,23 @@ export const GET_DETAIL_DISH = gql`
         }
     }
 `;
+
+export const GET_RANDOM_DISH = gql`
+    query GetRandomDish($mealId: Int!) {
+        randomDish(mealId: $mealId) {
+            id
+            name
+            price
+            description
+            img
+            restaurant {
+                id
+                name
+                address
+                latlng
+                open
+                close
+            }
+        }
+    }
+`;
