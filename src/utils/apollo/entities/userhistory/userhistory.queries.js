@@ -1,8 +1,11 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_HISTORIES = gql`
-    query GetUserDishes($user_id: Int!) {
-        userhistory(where: { user_id: { _eq: $user_id } }) {
+    query GetUserHistories($user_id: Int!) {
+        userhistory(
+            where: { user_id: { _eq: $user_id } }
+            order_by: { created_at: desc }
+        ) {
             id
             user_id
             dish_id

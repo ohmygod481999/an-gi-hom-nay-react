@@ -49,7 +49,7 @@ function UserHistory() {
             <div className="most_sale px-3 pb-3 mt-3">
                 <div className="row">
                     {userHistories.map((userHistory) => (
-                        <div key={userHistory.id} className="col-12">
+                        <div key={userHistory.id} className="col-12 mb-3">
                             <div className="d-flex align-items-center list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
                                 <div className="list-card-image">
                                     {/* <div className="star position-absolute">
