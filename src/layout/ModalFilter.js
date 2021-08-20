@@ -157,7 +157,6 @@ function ModalFilter() {
                                         className="custom-range"
                                         min={0}
                                         max={100}
-                                        name
                                     />
                                     <div className="form-row">
                                         <div className="form-group col-6">

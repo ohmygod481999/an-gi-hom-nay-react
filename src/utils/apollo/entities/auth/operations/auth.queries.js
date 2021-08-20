@@ -14,6 +14,15 @@ export const GET_AUTH = gql`
             isAdmin
             accessToken
             isLoggedIn
+            id
+        }
+    }
+`;
+
+export const GET_USER_BY_FIREBASE_ID = gql`
+    query GetUserByFirebaseId($fb_id: String!) {
+        user(where: { fb_uid: { _eq: $fb_id } }) {
+            id
         }
     }
 `;

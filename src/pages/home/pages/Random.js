@@ -1,11 +1,15 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import _ from "lodash";
 import React, { useMemo, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import ModalFilter from "../../../layout/ModalFilter";
 import { utils } from "../../../utils";
+import { GET_AUTH } from "../../../utils/apollo/entities/auth/operations/auth.queries";
 import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 import { GET_MEAL } from "../../../utils/apollo/entities/meal/operations/meal.quereis";
+import { INSERT_USER_DISH } from "../../../utils/apollo/entities/userdish/userdish.mutations";
+import { GET_USER_DISHES } from "../../../utils/apollo/entities/userdish/userdish.queries";
 import { useLocation } from "../../../utils/hooks/useLocation";
 
 function Random() {
@@ -16,11 +20,25 @@ function Random() {
     const [loading, setLoading] = useState(false);
 
     const locationData = useQuery(GET_LOCATION);
+    const authState = useQuery(GET_AUTH);
+    const userId = authState.data.auth.id;
 
     const { data } = useQuery(GET_MEAL, {
         variables: {
             id,
         },
+    });
+
+    const queryUserDishes = useQuery(GET_USER_DISHES, {
+        variables: {
+            user_id: userId,
+        },
+    });
+    const userdishes =
+        (queryUserDishes.data && queryUserDishes.data.userdish) || [];
+
+    const [insertUserDish] = useMutation(INSERT_USER_DISH, {
+        refetchQueries: [GET_USER_DISHES],
     });
 
     const meal = (data && data.meal_by_pk) || {};
@@ -74,6 +92,17 @@ function Random() {
             setRandomDish(dish);
             setLoading(false);
         }
+    };
+
+    const handleLikeDish = async () => {
+        insertUserDish({
+            variables: {
+                dish_id: randomDish.id,
+                user_id: userId,
+            },
+        })
+            .then((res) => toast["success"]("Đã thêm vào mục yêu thích"))
+            .catch((e) => toast["error"]("Thất bại " + e));
     };
 
     return (
@@ -162,9 +191,40 @@ function Random() {
                                 <div className="favourite-heart text-danger position-absolute">
                                     <a
                                         href="#"
-                                        onClick={(e) => e.preventDefault()}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (
+                                                userdishes
+                                                    .map(
+                                                        (userdish) =>
+                                                            userdish.dish_id
+                                                    )
+                                                    .includes(randomDish.id)
+                                            ) {
+                                                return toast["info"](
+                                                    "Món này đã có trong mục yêu thích của bạn"
+                                                );
+                                            }
+                                            handleLikeDish();
+                                        }}
                                     >
-                                        <i className="feather-heart" />
+                                        <i
+                                            className="feather-heart"
+                                            style={
+                                                userdishes
+                                                    .map(
+                                                        (userdish) =>
+                                                            userdish.dish_id
+                                                    )
+                                                    .includes(randomDish.id)
+                                                    ? {
+                                                          backgroundColor:
+                                                              "#d92662",
+                                                          color: "white",
+                                                      }
+                                                    : null
+                                            }
+                                        />
                                     </a>
                                 </div>
                                 <div className="member-plan position-absolute">
