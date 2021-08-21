@@ -9,7 +9,10 @@ import {
     INSERT_DISH,
     UPDATE_DISH,
 } from "../../../utils/apollo/entities/dish/operations/dish.mutations";
-import { GET_DETAIL_DISH } from "../../../utils/apollo/entities/dish/operations/dish.queries";
+import {
+    GET_DETAIL_DISH,
+    GET_DISH_PAGE,
+} from "../../../utils/apollo/entities/dish/operations/dish.queries";
 import {
     INSERT_FOOD,
     INSERT_MEALFOOD,
@@ -48,7 +51,9 @@ function DishForm() {
     const restaurants =
         (restaurantsData.data && restaurantsData.data.restaurant) || [];
 
-    const [insertDish] = useMutation(INSERT_DISH);
+    const [insertDish] = useMutation(INSERT_DISH, {
+        refetchQueries: [GET_DISH_PAGE],
+    });
     const [updateDish] = useMutation(UPDATE_DISH);
     const [insertFood] = useMutation(INSERT_FOOD, {
         refetchQueries: [GET_FOODS],

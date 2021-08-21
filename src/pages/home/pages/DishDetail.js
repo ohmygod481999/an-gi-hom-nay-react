@@ -8,6 +8,7 @@ import { useTitle } from "../../../utils/hooks/useTitle";
 import { Loader } from "@googlemaps/js-api-loader";
 import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 import { useLocation } from "../../../utils/hooks/useLocation";
+import { GET_ADDITION_PRODUCT } from "../../../utils/apollo/entities/additionproduct/additionproduct.queries";
 
 function DishDetail() {
     const { dishId } = useParams();
@@ -18,13 +19,19 @@ function DishDetail() {
             id: dishId,
         },
     });
+    const queryAdditionProduct = useQuery(GET_ADDITION_PRODUCT);
+    const additionProducts =
+        (queryAdditionProduct.data &&
+            queryAdditionProduct.data.additionproduct) ||
+        [];
+
     const locationData = useQuery(GET_LOCATION);
 
     const dish = (data && data.dish_by_pk) || {};
     useTitle(dish.name || "loading..");
 
     useEffect(() => {
-        if (data) {
+        if (data && queryAdditionProduct.data) {
             window
                 .$(".trending-slider")
                 .not(".slick-initialized")
@@ -55,7 +62,7 @@ function DishDetail() {
                     ],
                 });
         }
-    }, [data]);
+    }, [data, queryAdditionProduct]);
 
     useEffect(() => {
         if (
@@ -222,12 +229,7 @@ function DishDetail() {
                 </a> */}
             </div>
             {/* Most sales */}
-            <div
-                className="most_sale px-3"
-                style={{
-                    paddingBottom: 90,
-                }}
-            >
+            <div className="most_sale px-3">
                 <div className="row">
                     {(_.get(dish, "restaurant.dishes") || []).map((dish) => (
                         <div key={dish.id} className="col-12">
@@ -286,6 +288,76 @@ function DishDetail() {
                                         </span>{" "}
                                         <small>65% OSAHAN50</small>
                                     </div> */}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div
+                className="bg-light mt-3"
+                style={{
+                    paddingBottom: 90,
+                }}
+            >
+                <h5 className="font-weight-bold px-3 pt-3 m-0">
+                    Có thể bạn quan tâm
+                </h5>
+                {/* slider */}
+                <div className="trending-slider rounded overflow-hidden">
+                    {additionProducts.map((additionProduct) => (
+                        <div
+                            key={additionProduct.id}
+                            className="osahan-slider-item px-1 py-3"
+                        >
+                            <div className="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
+                                <div className="list-card-image">
+                                    <a
+                                        htarget="_blank"
+                                        href={additionProduct.third_party_url}
+                                    >
+                                        <div
+                                            style={{
+                                                width: "100%",
+                                                height: "150px",
+                                                backgroundImage: `url(${additionProduct.img})`,
+                                                backgroundPosition: "center",
+                                                backgroundSize: "cover"
+                                            }}
+                                        ></div>
+                                        {/* <img
+                                            src={}
+                                            className="img-fluid item-img w-100"
+                                        /> */}
+                                    </a>
+                                </div>
+                                <div className="p-3 position-relative">
+                                    <div className="list-card-body">
+                                        <h6 className="mb-1">
+                                            <a
+                                                target="_blank"
+                                                href={
+                                                    additionProduct.third_party_url
+                                                }
+                                                className="text-black"
+                                            >
+                                                {additionProduct.name}
+                                            </a>
+                                        </h6>
+                                        <p className="text-gray mb-3">
+                                            {additionProduct.sub_description}
+                                        </p>
+                                        <p className="text-gray m-0">
+                                            {" "}
+                                            <span className="text-black-50">
+                                                {" "}
+                                                {utils.formatMoney(
+                                                    additionProduct.price
+                                                )}
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
