@@ -36,7 +36,7 @@ export const useAuth = () => {
                     },
                 });
             } else {
-                authMutations.setAuth(null, null, null);
+                authMutations.setAuth(null, null, null, null);
             }
         });
     }, []);
