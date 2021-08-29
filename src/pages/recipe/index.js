@@ -9,7 +9,7 @@ const Recipe = () => {
                     <a className="toggle" href="#"><span /></a>
                     <div className="d-flex ml-auto">
                         <p className="m-0 ml-auto mr-1 recepie-feather"><a href="restaurant.html#ratings-and-reviews"><i className="feather-upload shadow bg-light rounded-circle p-2" /></a></p>
-                        <p className="m-0 ml-auto"><a href="restaurant.html#ratings-and-reviews"><i className="feather-star shadow bg-light text-danger rounded-circle p-2" /></a></p>
+                        <p className="m-0 ml-auto"><a href="restaurant.html#ratings-and-reviews"><i className="feather-star shadow bg-light text-primary rounded-circle p-2" /></a></p>
                     </div>
                 </div>
                 <img src="img/trending1.png" className="img-fluid w-100" alt="Responsive image" />

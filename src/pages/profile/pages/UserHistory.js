@@ -58,7 +58,7 @@ function UserHistory() {
                                             (300+)
                                         </span>
                                     </div> */}
-                                    <div className="favourite-heart text-danger position-absolute">
+                                    <div className="favourite-heart text-primary position-absolute">
                                         <a
                                             href="#"
                                             onClick={(e) => {

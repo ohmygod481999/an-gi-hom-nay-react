@@ -45,7 +45,7 @@ function Profile() {
                                 {emailVerified ? (
                                     <i className="feather-check-circle text-success" />
                                 ) : (
-                                    <i className="feather-alert-circle text-danger" />
+                                    <i className="feather-alert-circle text-primary" />
                                 )}
                             </h6>
                             <p className="text-muted m-0 small">{email}</p>

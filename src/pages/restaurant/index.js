@@ -221,7 +221,7 @@ const Restaurant = () => {
                                     </a>
                                 </span>
                                 <div className="media">
-                                    <div className="mr-3 font-weight-bold text-danger non_veg">
+                                    <div className="mr-3 font-weight-bold text-primary non_veg">
                                         .
                                     </div>
                                     <div className="media-body">
@@ -256,7 +256,7 @@ const Restaurant = () => {
                                     </button>
                                 </span>
                                 <div className="media">
-                                    <div className="mr-3 font-weight-bold text-danger non_veg">
+                                    <div className="mr-3 font-weight-bold text-primary non_veg">
                                         .
                                     </div>
                                     <div className="media-body">
@@ -294,7 +294,7 @@ const Restaurant = () => {
                                     </button>
                                 </span>
                                 <div className="media">
-                                    <div className="mr-3 font-weight-bold text-danger non_veg">
+                                    <div className="mr-3 font-weight-bold text-primary non_veg">
                                         .
                                     </div>
                                     <div className="media-body">
@@ -426,7 +426,7 @@ const Restaurant = () => {
                                     </a>
                                 </span>
                                 <div className="media">
-                                    <div className="mr-3 font-weight-bold text-danger non_veg">
+                                    <div className="mr-3 font-weight-bold text-primary non_veg">
                                         .
                                     </div>
                                     <div className="media-body">
@@ -461,7 +461,7 @@ const Restaurant = () => {
                                     </button>
                                 </span>
                                 <div className="media">
-                                    <div className="mr-3 font-weight-bold text-danger non_veg">
+                                    <div className="mr-3 font-weight-bold text-primary non_veg">
                                         .
                                     </div>
                                     <div className="media-body">
@@ -530,7 +530,7 @@ const Restaurant = () => {
                                     </a>
                                 </span>
                                 <div className="media">
-                                    <div className="mr-3 font-weight-bold text-danger non_veg">
+                                    <div className="mr-3 font-weight-bold text-primary non_veg">
                                         .
                                     </div>
                                     <div className="media-body">
@@ -976,7 +976,7 @@ const Restaurant = () => {
                     <div className="col selected">
                         <a
                             href="trending.html"
-                            className="text-danger small font-weight-bold text-decoration-none"
+                            className="text-primary small font-weight-bold text-decoration-none"
                         >
                             <p className="h4 m-0">
                                 <i className="feather-map-pin" />

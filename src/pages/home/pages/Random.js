@@ -231,7 +231,7 @@ function Random() {
                             />
                             <p
                                 className={`m-0 small ${
-                                    pickedMeal && meal.id === pickedMeal.id && "text-danger"
+                                    pickedMeal && meal.id === pickedMeal.id && "text-primary"
                                 }`}
                                 dangerouslySetInnerHTML={{
                                     __html: meal.name
@@ -317,7 +317,7 @@ function Random() {
                                                 3.1 (300+)
                                             </span>
                                         </div>
-                                        <div className="favourite-heart text-danger position-absolute">
+                                        <div className="favourite-heart text-primary position-absolute">
                                             <a
                                                 href="#"
                                                 onClick={(e) => {
@@ -486,7 +486,7 @@ function Random() {
                                 </div>
                                 <div className="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
                                     <div className="list-card-image">
-                                        <div className="favourite-heart text-danger position-absolute"></div>
+                                        <div className="favourite-heart text-primary position-absolute"></div>
                                         <div className="member-plan position-absolute">
                                             <span className="badge badge-dark">
                                                 {/* {utils.formatMoney(randomDish.price)} */}

@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -9,10 +9,17 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { GET_LOCATION } from "../../../utils/apollo/entities/location/operations/location.queries";
 import { useLocation } from "../../../utils/hooks/useLocation";
 import { GET_ADDITION_PRODUCT } from "../../../utils/apollo/entities/additionproduct/additionproduct.queries";
+import { INSERT_USER_DISH } from "../../../utils/apollo/entities/userdish/userdish.mutations";
+import { GET_USER_DISHES } from "../../../utils/apollo/entities/userdish/userdish.queries";
+import { toast } from "react-toastify";
+import { GET_AUTH } from "../../../utils/apollo/entities/auth/operations/auth.queries";
 
 function DishDetail() {
     const { dishId } = useParams();
     const history = useHistory();
+
+    const authState = useQuery(GET_AUTH);
+    const userId = authState.data.auth.id;
 
     const { data } = useQuery(GET_DETAIL_DISH, {
         variables: {
@@ -29,6 +36,31 @@ function DishDetail() {
 
     const dish = (data && data.dish_by_pk) || {};
     useTitle(dish.name || "loading..");
+
+    const [insertUserDish] = useMutation(INSERT_USER_DISH, {
+        refetchQueries: [GET_USER_DISHES],
+    });
+
+    // query user dishes
+    const queryUserDishes = useQuery(GET_USER_DISHES, {
+        variables: {
+            user_id: userId,
+        },
+    });
+    const userdishes =
+        (queryUserDishes.data && queryUserDishes.data.userdish) || [];
+    // end query user dishes
+
+    const handleLikeDish = async () => {
+        insertUserDish({
+            variables: {
+                dish_id: dishId,
+                user_id: userId,
+            },
+        })
+            .then((res) => toast["success"]("Đã thêm vào mục yêu thích"))
+            .catch((e) => toast["error"]("Thất bại " + e));
+    };
 
     useEffect(() => {
         if (data && queryAdditionProduct.data) {
@@ -98,8 +130,45 @@ function DishDetail() {
                         </a>
                         <div className="d-flex ml-auto">
                             <p className="m-0 ml-auto">
-                                <a href="restaurant.html#ratings-and-reviews">
-                                    <i className="feather-star shadow bg-light text-danger rounded-circle p-2" />
+                                <a
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (
+                                            userdishes
+                                                .map(
+                                                    (userdish) =>
+                                                        userdish.dish_id
+                                                )
+                                                .includes(parseInt(dishId))
+                                        ) {
+                                            return toast["info"](
+                                                "Món này đã có trong mục yêu thích của bạn"
+                                            );
+                                        }
+                                        handleLikeDish();
+                                    }}
+                                >
+                                    <i
+                                        className="feather-star shadow rounded-circle p-2"
+                                        style={
+                                            userdishes
+                                                .map(
+                                                    (userdish) =>
+                                                        userdish.dish_id
+                                                )
+                                                .includes(parseInt(dishId))
+                                                ? {
+                                                      backgroundColor:
+                                                          "#3b8beb",
+                                                      color: "white",
+                                                  }
+                                                : {
+                                                      backgroundColor: "white",
+                                                      color: "#3b8beb",
+                                                  }
+                                        }
+                                    />
                                 </a>
                             </p>
                         </div>
@@ -241,9 +310,43 @@ function DishDetail() {
                                             (300+)
                                         </span>
                                     </div>
-                                    <div className="favourite-heart text-danger position-absolute">
-                                        <a href="#">
-                                            <i className="feather-heart" />
+                                    <div className="favourite-heart text-primary position-absolute">
+                                        <a
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (
+                                                    userdishes
+                                                        .map(
+                                                            (userdish) =>
+                                                                userdish.dish_id
+                                                        )
+                                                        .includes(parseInt(dishId))
+                                                ) {
+                                                    return toast["info"](
+                                                        "Món này đã có trong mục yêu thích của bạn"
+                                                    );
+                                                }
+                                                handleLikeDish();
+                                            }}
+                                        >
+                                            <i
+                                                className="feather-heart"
+                                                style={
+                                                    userdishes
+                                                        .map(
+                                                            (userdish) =>
+                                                                userdish.dish_id
+                                                        )
+                                                        .includes(parseInt(dishId))
+                                                        ? {
+                                                              backgroundColor:
+                                                                  "#3b8beb",
+                                                              color: "white",
+                                                          }
+                                                        : null
+                                                }
+                                            />
                                         </a>
                                     </div>
                                     <div className="member-plan position-absolute">
@@ -323,7 +426,7 @@ function DishDetail() {
                                                 height: "150px",
                                                 backgroundImage: `url(${additionProduct.img})`,
                                                 backgroundPosition: "center",
-                                                backgroundSize: "cover"
+                                                backgroundSize: "cover",
                                             }}
                                         ></div>
                                         {/* <img

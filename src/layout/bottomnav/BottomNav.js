@@ -116,8 +116,8 @@ const BottomNav = () => {
             </ul>
             <ul className="bottom-nav">
                 <li className="email">
-                    <a className="text-danger" href="home.html">
-                        <p className="h5 m-0"><i className="feather-home text-danger"/></p>
+                    <a className="text-primary" href="home.html">
+                        <p className="h5 m-0"><i className="feather-home text-primary"/></p>
                         Home
                     </a>
                 </li>
