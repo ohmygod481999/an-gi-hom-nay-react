@@ -74,8 +74,8 @@ function RestaurantForm() {
                     id,
                     name,
                     address,
-                    open: utils.formatToISOTime(openHour),
-                    close: utils.formatToISOTime(closeHour),
+                    open: openHour ? utils.formatToISOTime(openHour) : null,
+                    close: closeHour ? utils.formatToISOTime(closeHour) : null,
                     img: imgUrl,
                     latlng: restaurantLatLng
                         ? `(${restaurantLatLng.lat},${restaurantLatLng.lng})`
@@ -98,8 +98,8 @@ function RestaurantForm() {
                 variables: {
                     name,
                     address,
-                    open: utils.formatToISOTime(openHour),
-                    close: utils.formatToISOTime(closeHour),
+                    open: openHour ? utils.formatToISOTime(openHour) : null,
+                    close: closeHour ? utils.formatToISOTime(closeHour) : null,
                     img: imgUrl,
                     latlng: restaurantLatLng
                         ? `(${restaurantLatLng.lat},${restaurantLatLng.lng})`

@@ -217,7 +217,7 @@ function Random() {
                                 pickedMeal && meal.id === pickedMeal.id
                                     ? {
                                           borderBottom:
-                                              "2px solid " + "#d92662",
+                                              "4px solid " + "#d92662",
                                       }
                                     : {}
                             }
@@ -492,7 +492,7 @@ function Random() {
                                                 {/* {utils.formatMoney(randomDish.price)} */}
                                             </span>
                                         </div>
-                                        <div className="pl-5 pr-5 mb-3">
+                                        <div className="pl-5 pr-5 mb-3 text-center">
                                             <img
                                                 src={
                                                     randomDish !== null
