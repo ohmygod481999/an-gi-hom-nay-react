@@ -16,7 +16,7 @@ function ActionFooter({ isHomePage }) {
                         to="/"
                         className={`${
                             location.pathname.includes("/home")
-                                ? "text-danger"
+                                ? "text-primary"
                                 : "text-dark"
                         } small font-weight-bold text-decoration-none`}
                     >
@@ -24,7 +24,7 @@ function ActionFooter({ isHomePage }) {
                             <i
                                 className={`feather-home ${
                                     location.pathname.includes("/home")
-                                        ? "text-danger"
+                                        ? "text-primary"
                                         : "text-dark"
                                 }`}
                             />
@@ -41,7 +41,7 @@ function ActionFooter({ isHomePage }) {
                         to="/most-popular"
                         className={`${
                             location.pathname === "/most-popular"
-                                ? "text-danger"
+                                ? "text-primary"
                                 : "text-dark"
                         } small font-weight-bold text-decoration-none`}
                     >
@@ -49,7 +49,7 @@ function ActionFooter({ isHomePage }) {
                             <i
                                 className={`feather-map-pin ${
                                     location.pathname === "/most-popular"
-                                        ? "text-danger"
+                                        ? "text-primary"
                                         : "text-dark"
                                 }`}
                             />
@@ -58,7 +58,7 @@ function ActionFooter({ isHomePage }) {
                     </Link>
                 </div> */}
                 <div className="col bg-white rounded-circle mt-n4 px-3 py-2">
-                    <div className="bg-danger rounded-circle mt-n0 shadow">
+                    <div className="bg-primary rounded-circle mt-n0 shadow">
                         <Link
                             to="/profile"
                             className="text-white small font-weight-bold text-decoration-none"
@@ -76,7 +76,7 @@ function ActionFooter({ isHomePage }) {
                         to="/favorites"
                         className={`${
                             location.pathname === "/favorites"
-                                ? "text-danger"
+                                ? "text-primary"
                                 : "text-dark"
                         } small font-weight-bold text-decoration-none`}
                     >
@@ -84,7 +84,7 @@ function ActionFooter({ isHomePage }) {
                             <i
                                 className={`feather-heart ${
                                     location.pathname === "/favorites"
-                                        ? "text-danger"
+                                        ? "text-primary"
                                         : "text-dark"
                                 }`}
                             />
@@ -101,7 +101,7 @@ function ActionFooter({ isHomePage }) {
                         to="/profile"
                         className={`${
                             location.pathname === "/profile"
-                                ? "text-danger"
+                                ? "text-primary"
                                 : "text-dark"
                         } small font-weight-bold text-decoration-none`}
                     >
@@ -109,7 +109,7 @@ function ActionFooter({ isHomePage }) {
                             <i
                                 className={`feather-user ${
                                     location.pathname === "/profile"
-                                        ? "text-danger"
+                                        ? "text-primary"
                                         : "text-dark"
                                 }`}
                             />

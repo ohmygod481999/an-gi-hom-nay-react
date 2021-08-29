@@ -217,7 +217,7 @@ function Random() {
                                 pickedMeal && meal.id === pickedMeal.id
                                     ? {
                                           borderBottom:
-                                              "4px solid " + "#d92662",
+                                              "4px solid " + "#3b8beb",
                                       }
                                     : {}
                             }
@@ -352,7 +352,7 @@ function Random() {
                                                             )
                                                             ? {
                                                                   backgroundColor:
-                                                                      "#d92662",
+                                                                      "#3b8beb",
                                                                   color: "white",
                                                               }
                                                             : null

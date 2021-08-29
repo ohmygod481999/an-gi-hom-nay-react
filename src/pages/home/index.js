@@ -22,10 +22,10 @@ function Home() {
             <div className="bg-light">
                 {/* slider */}
                 <Switch>
-                    <Route path="/home">
+                    <Route exact path="/home">
                         <Random />
                     </Route>
-                    <Route path="/home/dish/:dishId">
+                    <Route exact path="/home/dish/:dishId">
                         <DishDetail />
                     </Route>
                     {/* <Route path="/home">

@@ -95,7 +95,7 @@ function UserHistory() {
                                                         )
                                                         ? {
                                                               backgroundColor:
-                                                                  "#d92662",
+                                                                  "#3b8beb",
                                                               color: "white",
                                                           }
                                                         : null
