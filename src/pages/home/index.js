@@ -22,15 +22,15 @@ function Home() {
             <div className="bg-light">
                 {/* slider */}
                 <Switch>
-                    <Route path="/home/random/:id">
+                    <Route path="/home">
                         <Random />
                     </Route>
                     <Route path="/home/dish/:dishId">
                         <DishDetail />
                     </Route>
-                    <Route path="/home">
+                    {/* <Route path="/home">
                         <PickMeal />
-                    </Route>
+                    </Route> */}
                 </Switch>
             </div>
         </MainLayout>

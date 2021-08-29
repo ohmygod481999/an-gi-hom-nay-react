@@ -38,31 +38,31 @@ Version: 1.0
   });
 
 
-  $('.cat-slider').slick({
-      centerMode: true,
-      centerPadding: '30px',
-      slidesToShow: 4,
-      arrows: false,
-      responsive: [{
-              breakpoint: 768,
-              settings: {
-                  arrows: false,
-                  centerMode: true,
-                  centerPadding: '40px',
-                  slidesToShow: 4
-              }
-          },
-          {
-              breakpoint: 480,
-              settings: {
-                  arrows: false,
-                  centerMode: true,
-                  centerPadding: '40px',
-                  slidesToShow: 4
-              }
-          }
-      ]
-  });
+//   $('.cat-slider').slick({
+//       centerMode: true,
+//       centerPadding: '30px',
+//       slidesToShow: 4,
+//       arrows: false,
+//       responsive: [{
+//               breakpoint: 768,
+//               settings: {
+//                   arrows: false,
+//                   centerMode: true,
+//                   centerPadding: '40px',
+//                   slidesToShow: 4
+//               }
+//           },
+//           {
+//               breakpoint: 480,
+//               settings: {
+//                   arrows: false,
+//                   centerMode: true,
+//                   centerPadding: '40px',
+//                   slidesToShow: 4
+//               }
+//           }
+//       ]
+//   });
 
 
 //   $('.trending-slider').slick({

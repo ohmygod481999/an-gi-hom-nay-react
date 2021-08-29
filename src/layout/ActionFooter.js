@@ -32,7 +32,7 @@ function ActionFooter({ isHomePage }) {
                         Home
                     </Link>
                 </div>
-                <div
+                {/* <div
                     className={`col  ${
                         location.pathname === "/most-popular" ? "selected" : ""
                     }`}
@@ -56,19 +56,17 @@ function ActionFooter({ isHomePage }) {
                         </p>
                         Trending
                     </Link>
-                </div>
-                {isHomePage && (
-                    <div className="col bg-white rounded-circle mt-n4 px-3 py-2">
-                        <div className="bg-danger rounded-circle mt-n0 shadow">
-                            <Link
-                                to="/"
-                                className="text-white small font-weight-bold text-decoration-none"
-                            >
-                                <i className="feather-help-circle" />
-                            </Link>
-                        </div>
+                </div> */}
+                <div className="col bg-white rounded-circle mt-n4 px-3 py-2">
+                    <div className="bg-danger rounded-circle mt-n0 shadow">
+                        <Link
+                            to="/profile"
+                            className="text-white small font-weight-bold text-decoration-none"
+                        >
+                            <i className="feather-user" />
+                        </Link>
                     </div>
-                )}
+                </div>
                 <div
                     className={`col ${
                         location.pathname === "/favorites" ? "selected" : ""
@@ -94,7 +92,7 @@ function ActionFooter({ isHomePage }) {
                         Favorites
                     </Link>
                 </div>
-                <div
+                {/* <div
                     className={`col  ${
                         location.pathname === "/profile" ? "selected" : ""
                     }`}
@@ -118,7 +116,7 @@ function ActionFooter({ isHomePage }) {
                         </p>
                         Profile
                     </Link>
-                </div>
+                </div> */}
             </div>
         </div>
     );

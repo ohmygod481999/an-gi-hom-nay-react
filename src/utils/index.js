@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export const utils = {
     formatMoney: (money) =>
         new Intl.NumberFormat("vi-VN", {
@@ -51,8 +53,8 @@ export const utils = {
             );
 
             function callback(response, status) {
-                if (response.rows[0]) {
-                    console.log(response)
+                if (_.get(response, "rows[0]")) {
+                    console.log(response);
                     res({
                         distance: response.rows[0].elements[0].distance,
                         duration: response.rows[0].elements[0].duration,
